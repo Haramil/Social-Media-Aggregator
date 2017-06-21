@@ -123,8 +123,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\InstagramModel.cs" />
-    <Compile Include="Models\VKModel.cs" />
+    <Compile Include="Models\AggregatorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +217,24 @@
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InstagramSearcher\InstagramSearcher.csproj">
+      <Project>{465807fa-3c07-4876-90c8-121fdbb0ec7c}</Project>
+      <Name>InstagramSearcher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SearchLibrary\SearchLibrary.csproj">
+      <Project>{ec88b3ce-c338-4b68-9527-a6330965c549}</Project>
+      <Name>SearchLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwitterSearcher\TwitterSearcher.csproj">
+      <Project>{f370bfea-b3e9-425c-9799-19f04f17a571}</Project>
+      <Name>TwitterSearcher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VKSearcher\VKSearcher.csproj">
+      <Project>{0bc86e43-c922-40a1-90e8-4b6f06819687}</Project>
+      <Name>VKSearcher</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

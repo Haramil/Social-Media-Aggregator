@@ -1,3 +1,6 @@
 ﻿p {
     word-break: break-all;
 }
+.col {
+    margin-bottom: 10px;
+}

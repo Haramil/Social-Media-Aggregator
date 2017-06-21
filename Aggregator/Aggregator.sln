@@ -5,6 +5,14 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorServer", "AggregatorServer\AggregatorServer.csproj", "{ED6BB7C6-CF73-45F5-94BA-65AE47F0C5A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstagramSearcher", "InstagramSearcher\InstagramSearcher.csproj", "{465807FA-3C07-4876-90C8-121FDBB0EC7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VKSearcher", "VKSearcher\VKSearcher.csproj", "{0BC86E43-C922-40A1-90E8-4B6F06819687}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchLibrary", "SearchLibrary\SearchLibrary.csproj", "{EC88B3CE-C338-4B68-9527-A6330965C549}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterSearcher", "TwitterSearcher\TwitterSearcher.csproj", "{F370BFEA-B3E9-425C-9799-19F04F17A571}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{ED6BB7C6-CF73-45F5-94BA-65AE47F0C5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED6BB7C6-CF73-45F5-94BA-65AE47F0C5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED6BB7C6-CF73-45F5-94BA-65AE47F0C5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465807FA-3C07-4876-90C8-121FDBB0EC7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465807FA-3C07-4876-90C8-121FDBB0EC7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465807FA-3C07-4876-90C8-121FDBB0EC7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{465807FA-3C07-4876-90C8-121FDBB0EC7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BC86E43-C922-40A1-90E8-4B6F06819687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BC86E43-C922-40A1-90E8-4B6F06819687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BC86E43-C922-40A1-90E8-4B6F06819687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BC86E43-C922-40A1-90E8-4B6F06819687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC88B3CE-C338-4B68-9527-A6330965C549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC88B3CE-C338-4B68-9527-A6330965C549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC88B3CE-C338-4B68-9527-A6330965C549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC88B3CE-C338-4B68-9527-A6330965C549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

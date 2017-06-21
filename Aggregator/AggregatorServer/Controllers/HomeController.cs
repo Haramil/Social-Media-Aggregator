@@ -1,6 +1,5 @@
 ﻿using AggregatorServer.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace AggregatorServer.Controllers
@@ -15,11 +14,8 @@ namespace AggregatorServer.Controllers
         [HttpPost]
         public string Search(string query)
         {
-            InstagramModel instModel = new InstagramModel();
-            VKModel vKModel = new VKModel();
-            List<Block> list = instModel.Search(query);
-            list.AddRange(vKModel.Search(query));
-            return JsonConvert.SerializeObject(list);
+            AggregatorModel aggregator = new AggregatorModel();
+            return JsonConvert.SerializeObject(aggregator.Search(query));
         }
     }
 }

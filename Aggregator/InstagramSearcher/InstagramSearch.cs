@@ -1,22 +1,15 @@
 ﻿using Newtonsoft.Json;
+using SearchLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace AggregatorServer.Models
+namespace InstagramSearcher
 {
-    public class Block
+    public class InstagramSearch : ISearcher
     {
-        public string Caption { get; set; }
-        public string Image { get; set; }
-    }
-
-    public class InstagramModel
-    {
-        public List<Block> Search(string query)
+        public void Search(string query, List<GeneralPost> searchResult)
         {
-            var instBlocks = new List<Block>();
-
             var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1");
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
@@ -24,14 +17,12 @@ namespace AggregatorServer.Models
             var instList = instData.tag.media.nodes;
             foreach (var instElem in instList)
             {
-                instBlocks.Add(new Block
+                searchResult.Add(new GeneralPost
                 {
                     Caption = instElem.caption,
                     Image = instElem.display_src
                 });
             }
-            
-            return instBlocks;
         }
     }
 }

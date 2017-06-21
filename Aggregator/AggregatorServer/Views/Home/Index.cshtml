@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Social Media Aggregator";
+    ViewBag.Title = "Агрегатор социальных сетей";
 }
 <div class="container">
     <div class="row" id="search_panel" style="margin-top: 200px;">
@@ -39,27 +39,26 @@
             });
 
             function successFunc(data, status) {
+
                 $("#col1").empty();
                 $("#col2").empty();
                 $("#col3").empty();
+
+                var cols = [$("#col1")];
+
                 var list = JSON.parse(data);
+                
+                if ($("#col2").offset().left > $("#col1").offset().left)
+                    cols.push($("#col2"));
+                if ($("#col3").offset().left > $("#col1").offset().left)
+                    cols.push($("#col3"));
+
+                var selectedCol = cols[0];
+
                 for (i = 0; i < list.length; i++) {
-                    var col1h = $("#col1").height();
-                    var col2h = $("#col2").height();
-                    var col3h = $("#col3").height();
-                    var min = Math.min(col1h, col2h, col3h);
-                    var elem;
-                    if (col1h == min) {
-                        elem = $("#col1");
-                    }
-                    else if (col2h == min) {
-                        elem = $("#col2");
-                    }
-                    else {
-                        elem = $("#col3");
-                    }
+
                     if (list[i].Image == "") {
-                        elem.append(
+                        selectedCol.append(
                             '<div class="card">' +
                                 '<div class="card-content">' +
                                     '<p>' + list[i].Caption + '</p>' +
@@ -67,7 +66,7 @@
                             '</div>');
                     }
                     else {
-                        elem.append(
+                        selectedCol.append(
                             '<div class="card">' +
                                 '<div class="card-image">' +
                                     '<img src="' + list[i].Image + '">' +
@@ -77,6 +76,16 @@
                                 '</div>' +
                             '</div>');
                     }
+
+                    var minHeight = selectedCol.height()
+
+                    cols.forEach(function (item, i, arr) {
+                        if (item.height() < minHeight) {
+                            selectedCol = item;
+                            minHeight = item.height();
+                        }
+                    });
+
                 }
             }
         };
