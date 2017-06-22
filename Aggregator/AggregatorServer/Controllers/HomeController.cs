@@ -1,6 +1,7 @@
 ﻿using AggregatorServer.Models;
 using Newtonsoft.Json;
 using System.Web.Mvc;
+using SearchLibrary;
 
 namespace AggregatorServer.Controllers
 {

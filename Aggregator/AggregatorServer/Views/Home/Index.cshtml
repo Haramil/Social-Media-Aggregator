@@ -67,21 +67,17 @@
                                     '</div>';
                     var footer = "";
                     if (list[i].AuthorName != "")
-                        footer = '<div class="card-content">' +
-                                    '<div class="row valign-wrapper">' +
-                                        '<div class="col s3 m3 l3">' +
-                                            '<img src="' + list[i].AuthorAvatar + '" alt="" class="circle responsive-img">' +
-                                        '</div>' +
-                                        '<div class="col s9 m9 l9">' +
-                                            '<p>' + list[i].AuthorName + '</p>' +
-                                            '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
-                                        '</div>' +
+                        footer = '<div class="row valign-wrapper">' +
+                                    '<div class="col s3 m3 l3">' +
+                                        '<img src="' + list[i].AuthorAvatar + '" alt="" class="circle responsive-img">' +
+                                    '</div>' +
+                                    '<div class="col s9 m9 l9">' +
+                                        '<p>' + list[i].AuthorName + '</p>' +
+                                        '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
                                     '</div>' +
                                 '</div>';
                     else {
-                        footer = '<div class="card-content">' +
-                                    '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
-                                 '</div>';
+                        footer = '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>';
                     }
                     selectedCol.append(
                         '<a href="' + list[i].PostLink + '" target="_blank">' +
@@ -91,7 +87,9 @@
                                     '<span class="card-title">' + list[i].Social + '</span>' +
                                     '<p>' + list[i].Text + '<p>' +
                                 '</div>' +
-                                footer +
+                                '<div class="card-content">' +
+                                    footer +
+                                '</div>' +
                             '</div>' +
                         '</a>');
 

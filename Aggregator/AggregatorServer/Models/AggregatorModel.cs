@@ -3,6 +3,7 @@ using SearchLibrary;
 using System.Collections.Generic;
 using VKSearcher;
 using System.Linq;
+using System.Threading;
 
 namespace AggregatorServer.Models
 {
@@ -13,8 +14,15 @@ namespace AggregatorServer.Models
             List<GeneralPost> result = new List<GeneralPost>();
             InstagramSearch instagram = new InstagramSearch();
             VKSearch vk = new VKSearch();
-            instagram.Search(query, result);
-            vk.Search(query, result);
+
+            Thread instThread = new Thread(() => instagram.Search(query, result));
+            Thread vkThread = new Thread(() => vk.Search(query, result));
+
+            instThread.Start();
+            vkThread.Start();
+            instThread.Join();
+            vkThread.Join();
+
             return result.OrderByDescending(p => p.Date).ToList();
         }
     }
