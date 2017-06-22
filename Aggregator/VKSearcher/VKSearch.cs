@@ -82,9 +82,12 @@ namespace VKSearcher
             }
         }
 
-        public void Search(string query, List<GeneralPost> searchResult)
+        public string Search(string query, List<GeneralPost> searchResult, string pageInfo = null)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50&v=5.65");
+            if (pageInfo != null) pageInfo = "&start_from=" + pageInfo;
+            else pageInfo = "";
+
+            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50&v=5.65" + pageInfo);
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic vkData = JsonConvert.DeserializeObject(responseString);
@@ -121,6 +124,9 @@ namespace VKSearcher
             }
 
             postThreads.ForEach(t => t.Join());
+
+            string page = vk.next_from;
+            return page;
         }
 
         private class Author

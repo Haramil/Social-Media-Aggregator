@@ -1,7 +1,6 @@
 ﻿using AggregatorServer.Models;
 using Newtonsoft.Json;
 using System.Web.Mvc;
-using SearchLibrary;
 
 namespace AggregatorServer.Controllers
 {
@@ -17,6 +16,13 @@ namespace AggregatorServer.Controllers
         {
             AggregatorModel aggregator = new AggregatorModel();
             return JsonConvert.SerializeObject(aggregator.Search(query));
+        }
+
+        [HttpPost]
+        public string More(string query, string vkPage, string instPage)
+        {
+            AggregatorModel aggregator = new AggregatorModel();
+            return JsonConvert.SerializeObject(aggregator.More(query, vkPage, instPage));
         }
     }
 }

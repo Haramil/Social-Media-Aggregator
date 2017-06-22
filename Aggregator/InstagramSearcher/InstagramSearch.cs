@@ -37,16 +37,19 @@ namespace InstagramSearcher
             }
         }
 
-        public void Search(string query, List<GeneralPost> searchResult)
+        public string Search(string query, List<GeneralPost> searchResult, string pageInfo = null)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1");
+            if (pageInfo != null) pageInfo = "&max_id=" + pageInfo;
+            else pageInfo = "";
+
+            var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1" + pageInfo);
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic instData = JsonConvert.DeserializeObject(responseString);
-            var instList = instData.tag.media.nodes;
+            var inst = instData.tag.media;
 
             List<Thread> postThreads = new List<Thread>();
-            foreach (var instElem in instList)
+            foreach (var instElem in inst.nodes)
             {
                 Thread postThread = new Thread(() => PostSearch(instElem, searchResult));
                 postThreads.Add(postThread);
@@ -54,6 +57,9 @@ namespace InstagramSearcher
             }
 
             postThreads.ForEach(t => t.Join());
+
+            string page = inst.page_info.end_cursor;
+            return page;
         }
     }
 }

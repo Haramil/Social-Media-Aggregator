@@ -4,6 +4,6 @@ namespace SearchLibrary
 {
     public interface ISearcher
     {
-        void Search(string query, List<GeneralPost> searchResult);
+        string Search(string query, List<GeneralPost> searchResult, string pageInfo = null);
     }
 }

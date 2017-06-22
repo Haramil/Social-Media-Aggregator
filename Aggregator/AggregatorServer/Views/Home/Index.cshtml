@@ -23,34 +23,35 @@
     </div>
 </div>
 
+<div class="container">
+    <div class="row">
+        <div class="col s2 m2 l2 offset-s4 offset-m4 offset-l4" id="more">
+        </div>
+        <div class="col s2 m2 l2">
+            <div class="preloader-wrapper big" id="load_more">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section scripts{
     <script type="text/javascript">
+        $(function () {
 
-        function search() {
-
-            $("#search_panel").animate({
-                "margin-top": 0
-            }, 500, function () {
-                $("#progress").append('<div class="indeterminate"></div>');
-            });
-
-            $.ajax({
-                type: "POST",
-                url: '/Home/Search',
-                data: { query: $("#search_input").val().toString() },
-                success: successFunc
-            });
-
-            function successFunc(data, status) {
-
-                $("#col1").empty();
-                $("#col2").empty();
-                $("#col3").empty();
-
+            function fill(list) {
                 var cols = [$("#col1")];
 
-                var list = JSON.parse(data);
-                
                 if ($("#col2").offset().left > $("#col1").offset().left)
                     cols.push($("#col2"));
                 if ($("#col3").offset().left > $("#col1").offset().left)
@@ -101,20 +102,64 @@
                             minHeight = item.height();
                         }
                     });
-
                 }
-                $("#progress").empty();
-            }
-        };
+            };
 
-        $('#search_input').keyup(function (e) {
-            if (e.keyCode == 13) {
+            function search() {
+
+                $("#search_panel").animate({
+                    "margin-top": 0
+                }, 500, function () {
+                    $("#progress").append('<div class="indeterminate"></div>');
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/Search',
+                    data: { query: $("#search_input").val().toString() },
+                }).done(function (data) {
+                    $("#col1").empty();
+                    $("#col2").empty();
+                    $("#col3").empty();
+                    $("#more").empty();
+
+                    var result = JSON.parse(data);
+
+                    fill(result.Posts);
+
+                    $("#progress").empty();
+                    $("#more").append('<a class="waves-effect waves-light btn" id="more_button">Ещё</a>').click(function () {
+
+                        $("#more_button").hide();
+
+                        $("#load_more").addClass("active");
+
+                        $.ajax({
+                            type: "POST",
+                            url: '/Home/More',
+                            data: { query: result.Query, vkPage: result.VKPagination, instPage: result.InstPagination },
+                        }).done(function (data) {
+
+                            result = JSON.parse(data);
+                            fill(result.Posts);
+
+                            $("#more_button").show();
+                            $("#load_more").removeClass("active");
+                        });
+                    });
+                });
+            }
+
+            $('#search_input').keyup(function (e) {
+                if (e.keyCode == 13) {
+                    search();
+                }
+            });
+
+            $("#search_button").click(function () {
                 search();
-            }
-        });
+            });
 
-        $("#search_button").click(function () {
-            search();
         });
     </script>
 }
