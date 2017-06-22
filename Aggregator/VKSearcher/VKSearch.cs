@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SearchLibrary;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,8 @@ namespace VKSearcher
 {
     public class VKSearch : ISearcher
     {
+        Dictionary<int, Author> authors = new Dictionary<int, Author>();
+
         private void PostSearch(dynamic vkPost, List<GeneralPost> searchResult)
         {
             GeneralPost newPost = new GeneralPost();
@@ -18,9 +19,10 @@ namespace VKSearcher
             newPost.Text = vkPost.text;
             try
             {
-                newPost.Text += Environment.NewLine + vkPost.copy_text;
+                newPost.Text += Environment.NewLine + vkPost.copy_history.text;
             }
             catch { }
+
             while (true)
             {
                 int begin = newPost.Text.IndexOf("[");
@@ -35,6 +37,7 @@ namespace VKSearcher
             }
 
             newPost.Social = SocialMedia.VK;
+
             double sec = vkPost.date;
             newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec);
 
@@ -43,41 +46,31 @@ namespace VKSearcher
                 foreach (var att in vkPost.attachments)
                 {
                     string type = att.type;
+                    string source;
                     if (type == "video")
                     {
-                        newPost.Image = att.video.image_big;
-                        break;
+                        source = att.video.photo_800;
+                        if (source != null) { newPost.Image = source; break; }
+                        source = att.video.photo_640;
+                        if (source != null) { newPost.Image = source; break; }
                     }
                     else if (type == "photo")
                     {
-                        newPost.Image = att.photo.src_big;
+                        source = att.photo.photo_807;
+                        if (source != null) { newPost.Image = source; break; }
+                        source = att.photo.photo_604;
+                        if (source != null) { newPost.Image = source; break; }
                         break;
                     }
                 }
             }
             catch { }
 
-            string screenName;
+            int fromID = vkPost.from_id;
 
-            try
-            {
-                screenName = vkPost.user.screen_name;
-                newPost.AuthorName = vkPost.user.first_name + " " + vkPost.user.last_name;
-                newPost.AuthorAvatar = vkPost.user.photo;
-            }
-            catch
-            {
-                try
-                {
-                    screenName = vkPost.group.screen_name;
-                    newPost.AuthorName = vkPost.group.name;
-                    newPost.AuthorAvatar = vkPost.group.photo;
-                }
-                catch
-                {
-                    screenName = "about";
-                }
-            }
+            string screenName = authors[fromID].ScreenName;
+            newPost.AuthorName = authors[fromID].Name;
+            newPost.AuthorAvatar = authors[fromID].Photo;
 
             string ownerID = vkPost.owner_id;
             string ID = vkPost.id;
@@ -91,22 +84,50 @@ namespace VKSearcher
 
         public void Search(string query, List<GeneralPost> searchResult)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50");
+            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50&v=5.65");
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic vkData = JsonConvert.DeserializeObject(responseString);
-            var vkList = vkData.response;
+            var vk = vkData.response;
+
+            foreach (var profile in vk.profiles)
+            {
+                int id = profile.id;
+                authors.Add(id, new Author
+                {
+                    ScreenName = profile.screen_name,
+                    Name = profile.first_name + " " + profile.last_name,
+                    Photo = profile.photo_100
+                });
+            }
+            foreach (var group in vk.groups)
+            {
+                int id = group.id;
+                id = -id;
+                authors.Add(id, new Author
+                {
+                    ScreenName = group.screen_name,
+                    Name = group.name,
+                    Photo = group.photo_200
+                });
+            }
 
             List<Thread> postThreads = new List<Thread>();
-            foreach (var vkElem in vkList)
+            foreach (var item in vk.items)
             {
-                if (vkElem is JValue) continue;
-                Thread postThread = new Thread(() => PostSearch(vkElem, searchResult));
+                Thread postThread = new Thread(() => PostSearch(item, searchResult));
                 postThreads.Add(postThread);
                 postThread.Start();
             }
 
             postThreads.ForEach(t => t.Join());
+        }
+
+        private class Author
+        {
+            public string ScreenName { get; set; }
+            public string Name { get; set; }
+            public string Photo { get; set; }
         }
     }
 }
