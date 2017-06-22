@@ -9,6 +9,8 @@ namespace AggregatorServer.Models
 {
     public class AggregatorModel
     {
+        private Thread instThread, vkThread;
+
         public SearchResult Search(string query)
         {
             SearchResult searchResult = new SearchResult();
@@ -17,8 +19,8 @@ namespace AggregatorServer.Models
             InstagramSearch instagram = new InstagramSearch();
             VKSearch vk = new VKSearch();
 
-            Thread instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts));
-            Thread vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts));
+            instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts, ""));
+            vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts, ""));
 
             instThread.Start();
             vkThread.Start();
@@ -38,8 +40,15 @@ namespace AggregatorServer.Models
             InstagramSearch instagram = new InstagramSearch();
             VKSearch vk = new VKSearch();
 
-            Thread instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts, instPageInfo));
-            Thread vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts, vkPageInfo));
+            if (instPageInfo != "")
+                instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts, instPageInfo));
+            else
+                instThread = new Thread(() => searchResult.InstPagination = "");
+
+            if (vkPageInfo != "")
+                vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts, vkPageInfo));
+            else
+                vkThread = new Thread(() => searchResult.VKPagination = "");
 
             instThread.Start();
             vkThread.Start();

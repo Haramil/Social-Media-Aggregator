@@ -37,13 +37,19 @@ namespace InstagramSearcher
             }
         }
 
-        public string Search(string query, List<GeneralPost> searchResult, string pageInfo = null)
+        public string Search(string query, List<GeneralPost> searchResult, string pageInfo)
         {
-            if (pageInfo != null) pageInfo = "&max_id=" + pageInfo;
-            else pageInfo = "";
+            if (pageInfo != "") pageInfo = "&max_id=" + pageInfo;
 
             var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1" + pageInfo);
-            var response = (HttpWebResponse)request.GetResponse();
+
+            HttpWebResponse response;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException) { return null; }
+
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic instData = JsonConvert.DeserializeObject(responseString);
             var inst = instData.tag.media;
