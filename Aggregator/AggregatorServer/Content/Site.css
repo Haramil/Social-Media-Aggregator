@@ -7,3 +7,6 @@
 a {
     color: black;
 }
+#more {
+    display: none;
+}

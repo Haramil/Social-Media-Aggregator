@@ -26,6 +26,7 @@
 <div class="container">
     <div class="row">
         <div class="col s2 m2 l2 offset-s4 offset-m4 offset-l4" id="more">
+            <a class="waves-effect waves-light btn" id="more_button">Ещё</a>
         </div>
         <div class="col s2 m2 l2">
             <div class="preloader-wrapper big" id="load_more">
@@ -48,6 +49,8 @@
 @section scripts{
     <script type="text/javascript">
         $(function () {
+
+            var result;
 
             function fill(list) {
                 var cols = [$("#col1")];
@@ -121,32 +124,13 @@
                     $("#col1").empty();
                     $("#col2").empty();
                     $("#col3").empty();
-                    $("#more").empty();
 
-                    var result = JSON.parse(data);
+                    result = JSON.parse(data);
 
                     fill(result.Posts);
 
                     $("#progress").empty();
-                    $("#more").append('<a class="waves-effect waves-light btn" id="more_button">Ещё</a>').click(function () {
-
-                        $("#more_button").hide();
-
-                        $("#load_more").addClass("active");
-
-                        $.ajax({
-                            type: "POST",
-                            url: '/Home/More',
-                            data: { query: result.Query, vkPage: result.VKPagination, instPage: result.InstPagination },
-                        }).done(function (data) {
-
-                            result = JSON.parse(data);
-                            fill(result.Posts);
-
-                            $("#more_button").show();
-                            $("#load_more").removeClass("active");
-                        });
-                    });
+                    $("#more").show();
                 });
             }
 
@@ -158,6 +142,26 @@
 
             $("#search_button").click(function () {
                 search();
+            });
+
+            $("#more_button").click(function () {
+
+                $("#more_button").hide();
+
+                $("#load_more").addClass("active");
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/More',
+                    data: { query: result.Query, vkPage: result.VKPagination, instPage: result.InstPagination },
+                }).done(function (data) {
+
+                    result = JSON.parse(data);
+                    fill(result.Posts);
+
+                    $("#more_button").show();
+                    $("#load_more").removeClass("active");
+                });
             });
 
         });
