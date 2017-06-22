@@ -124,8 +124,10 @@ namespace VKSearcher
 
             postThreads.ForEach(t => t.Join());
 
-            string page = vk.next_from;
-            return page;
+            if (searchResult.Count == 0)
+                return "retry";
+            else
+                return vk.next_from;
         }
 
         private class Author

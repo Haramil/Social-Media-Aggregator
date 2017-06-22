@@ -129,8 +129,9 @@
 
                     fill(result.Posts);
 
-                    $("#progress").empty();
                     $("#more").show();
+                }).always(function () {
+                    $("#progress").empty();
                 });
             }
 
@@ -159,6 +160,7 @@
                     result = JSON.parse(data);
                     fill(result.Posts);
 
+                }).always(function (data) {
                     $("#more_button").show();
                     $("#load_more").removeClass("active");
                 });
