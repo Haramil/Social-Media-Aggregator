@@ -6,10 +6,12 @@
         <div class="input-field col s8 m6 offset-s2 offset-m3">
             <input id="search_input" type="text" class="validate">
             <label class="active" for="search_input">Введите поисковый запрос</label>
+            <div class="progress" id="progress"></div>
             <a class="waves-effect waves-light btn" id="search_button">Поиск</a>
         </div>
     </div>
 </div>
+
 <div class="container">
     <div class="row">
         <div class="col s12 m6 l4" id="col1">
@@ -29,7 +31,7 @@
             $("#search_panel").animate({
                 "margin-top": 0
             }, 500, function () {
-
+                $("#progress").append('<div class="indeterminate"></div>');
             });
 
             $.ajax({
@@ -58,26 +60,14 @@
 
                 for (i = 0; i < list.length; i++) {
 
-                    if (list[i].Image == "") {
-                        selectedCol.append(
-                            '<div class="card">' +
-                                '<div class="card-content">' +
-                                    '<p>' + list[i].Caption + '</p>' +
-                                '</div>' +
-                            '</div>');
-                    }
-                    else {
-                        selectedCol.append(
-                            '<a href="' + list[i].PostLink + '" target="_blank">' +
-                            '<div class="card">' +
-                                '<div class="card-image">' +
-                                    '<img src="' + list[i].Image + '">' +
-                                '</div>' +
-                                '<div class="card-content">' +
-                                    '<span class="card-title">' + list[i].Social + '</span>' +
-                                    '<p>' + list[i].Text + '<p>' +
-                                '</div>' +
-                                '<div class="card-content">' +
+                    var imageBlock = "";
+                    if (list[i].Image != "")
+                        imageBlock = '<div class="card-image">' +
+                                        '<img src="' + list[i].Image + '">' +
+                                    '</div>';
+                    var footer = "";
+                    if (list[i].AuthorName != "")
+                        footer = '<div class="card-content">' +
                                     '<div class="row valign-wrapper">' +
                                         '<div class="col s3 m3 l3">' +
                                             '<img src="' + list[i].AuthorAvatar + '" alt="" class="circle responsive-img">' +
@@ -87,10 +77,23 @@
                                             '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
                                         '</div>' +
                                     '</div>' +
-                                '</div>' +
-                            '</div>' +
-                            '</a>');
+                                '</div>';
+                    else {
+                        footer = '<div class="card-content">' +
+                                    '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
+                                 '</div>';
                     }
+                    selectedCol.append(
+                        '<a href="' + list[i].PostLink + '" target="_blank">' +
+                            '<div class="card">' +
+                                imageBlock +
+                                '<div class="card-content">' +
+                                    '<span class="card-title">' + list[i].Social + '</span>' +
+                                    '<p>' + list[i].Text + '<p>' +
+                                '</div>' +
+                                footer +
+                            '</div>' +
+                        '</a>');
 
                     var minHeight = selectedCol.height()
 
@@ -102,6 +105,7 @@
                     });
 
                 }
+                $("#progress").empty();
             }
         };
 

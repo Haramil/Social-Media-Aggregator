@@ -2,6 +2,7 @@
 using SearchLibrary;
 using System.Collections.Generic;
 using VKSearcher;
+using System.Linq;
 
 namespace AggregatorServer.Models
 {
@@ -14,7 +15,7 @@ namespace AggregatorServer.Models
             VKSearch vk = new VKSearch();
             instagram.Search(query, result);
             vk.Search(query, result);
-            return result;
+            return result.OrderByDescending(p => p.Date).ToList();
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
 
 namespace SearchLibrary
 {
@@ -8,7 +9,7 @@ namespace SearchLibrary
     {
         public DateTime Date { get; set; }
 
-        public string AuthorName { get; set; }
+        public string AuthorName { get; set; } = "";
 
         public string AuthorAvatar { get; set; }
 
@@ -19,7 +20,7 @@ namespace SearchLibrary
 
         public string Text { get; set; }
 
-        public string Image { get; set; }
+        public string Image { get; set; } = "";
     }
 
     public enum SocialMedia

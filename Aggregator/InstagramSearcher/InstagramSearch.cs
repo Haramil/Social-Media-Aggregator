@@ -22,8 +22,8 @@ namespace InstagramSearcher
 
                 newPost.Text = instElem.caption;
                 newPost.Image = instElem.display_src;
-                double ms = instElem.date;
-                newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(ms);
+                double sec = instElem.date;
+                newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec);
                 newPost.PostLink = "https://www.instagram.com/p/" + instElem.code;
 
                 request = (HttpWebRequest)WebRequest.Create(newPost.PostLink + "/?__a=1");
