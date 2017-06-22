@@ -18,6 +18,7 @@
         </div>
         <div class="col s12 m12 l4" id="col3">
         </div>
+    </div>
 </div>
 
 @section scripts{
@@ -67,14 +68,28 @@
                     }
                     else {
                         selectedCol.append(
+                            '<a href="' + list[i].PostLink + '" target="_blank">' +
                             '<div class="card">' +
                                 '<div class="card-image">' +
                                     '<img src="' + list[i].Image + '">' +
                                 '</div>' +
                                 '<div class="card-content">' +
-                                    '<p>' + list[i].Caption + '</p>' +
+                                    '<span class="card-title">' + list[i].Social + '</span>' +
+                                    '<p>' + list[i].Text + '<p>' +
                                 '</div>' +
-                            '</div>');
+                                '<div class="card-content">' +
+                                    '<div class="row valign-wrapper">' +
+                                        '<div class="col s3 m3 l3">' +
+                                            '<img src="' + list[i].AuthorAvatar + '" alt="" class="circle responsive-img">' +
+                                        '</div>' +
+                                        '<div class="col s9 m9 l9">' +
+                                            '<p>' + list[i].AuthorName + '</p>' +
+                                            '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '</a>');
                     }
 
                     var minHeight = selectedCol.height()

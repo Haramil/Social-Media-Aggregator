@@ -21,7 +21,7 @@ namespace VKSearcher
                 {
                     searchResult.Add(new GeneralPost
                     {
-                        Caption = vkElem.text,
+                        Text = vkElem.text,
                         Image = vkElem.attachment.photo.src
                     });
                 }
@@ -32,7 +32,7 @@ namespace VKSearcher
                         searchResult.Add(new GeneralPost
                         {
                             Image = string.Empty,
-                            Caption = vkElem.text,
+                            Text = vkElem.text,
                         });
                     }
                     catch { }
