@@ -90,16 +90,18 @@ namespace VKSearcher
         {
             if (pageInfo != "") pageInfo = "&start_from=" + pageInfo;
 
-            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50&v=5.65" + pageInfo);
+            string responseString;
 
-            HttpWebResponse response;
             try
             {
-                response = (HttpWebResponse)request.GetResponse();
+                var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/newsfeed.search?q=%23" + query + "&count=20&extended=1&access_token=9123309e9123309e9123309ecb917ffb61991239123309ec86b359fe8d192ce5c598a50&v=5.65" + pageInfo);
+                var response = (HttpWebResponse)request.GetResponse();
+                responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
-            catch (WebException) { return ""; }
+            catch {
+                return "";
+            }
 
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic vkData = JsonConvert.DeserializeObject(responseString);
             var vk = vkData.response;
 
@@ -133,19 +135,22 @@ namespace VKSearcher
             catch { }
 
             List<Thread> postThreads = new List<Thread>();
-            foreach (var item in vk.items)
+            try
             {
-                Thread postThread = new Thread(() => PostSearch(item, searchResult, dict));
-                postThreads.Add(postThread);
-                postThread.Start();
-            }
+                foreach (var item in vk.items)
+                {
+                    Thread postThread = new Thread(() => PostSearch(item, searchResult, dict));
+                    postThreads.Add(postThread);
+                    postThread.Start();
+                }
 
-            postThreads.ForEach(t => t.Join());
-
-            if (postThreads.Count == 0)
-                return "retry";
-            else
+                postThreads.ForEach(t => t.Join());
                 return vk.next_from;
+            }
+            catch
+            {
+                return "retry";
+            }
         }
 
         private class Author

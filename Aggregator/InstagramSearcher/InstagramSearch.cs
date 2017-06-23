@@ -45,16 +45,16 @@ namespace InstagramSearcher
         {
             if (pageInfo != "") pageInfo = "&max_id=" + pageInfo;
 
-            var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1" + pageInfo);
+            string responseString;
 
-            HttpWebResponse response;
             try
             {
-                response = (HttpWebResponse)request.GetResponse();
+                var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1" + pageInfo);
+                var response = (HttpWebResponse)request.GetResponse();
+                responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
-            catch (WebException) { return ""; }
+            catch { return ""; }
 
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic instData = JsonConvert.DeserializeObject(responseString);
             var inst = instData.tag.media;
 
