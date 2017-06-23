@@ -14,12 +14,5 @@ namespace Censure
             Censor cenz = new Censor(dict);
             return cenz.cenzor(text);
         }
-
-        public bool HasCensuredWord(string text, string filewithwords)
-        {
-            Censor cenz = new Censor(File.ReadAllLines(filewithwords, Encoding.GetEncoding("windows-1251")).ToList());
-            return cenz.HasCensoredWord(text);
-        }
-
     }
 }

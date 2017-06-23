@@ -38,28 +38,6 @@ namespace Censure
             return censoredText;
         }
 
-     
-        public bool HasCensoredWord(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return false;
-
-            var censoredText = text;
-
-            foreach (var censoredWord in CensoredWords)
-            {
-                var regularExpression = ToRegexPattern(censoredWord);
-
-                censoredText = Regex.Replace(censoredText, regularExpression, StarCensoredMatch,
-                    RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
-                if (censoredText != text)
-                    return true;
-            }
-
-            return false;
-        }
-
         static string StarCensoredMatch(Group m)
         {
             return new string('*', m.Captures[0].Value.Length);

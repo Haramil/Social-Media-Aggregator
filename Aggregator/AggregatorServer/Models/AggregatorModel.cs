@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using TwitterSearcher;
 using System.Text.RegularExpressions;
+using Censure;
 
 namespace AggregatorServer.Models
 {
@@ -19,6 +20,11 @@ namespace AggregatorServer.Models
         {
             SearchResult searchResult = new SearchResult();
             searchResult.Query = query;
+
+            Cenzor cenzor = new Cenzor();
+
+            if (query != cenzor.Cenz(query, dict))
+                return searchResult;
 
             InstagramSearch instagram = new InstagramSearch();
             VKSearch vk = new VKSearch();

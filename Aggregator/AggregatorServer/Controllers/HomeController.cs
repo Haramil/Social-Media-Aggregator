@@ -19,7 +19,7 @@ namespace AggregatorServer.Controllers
         {
             string jsonFile = Cashing.Path + @"Cash\" + Cashing.CashQuery + ".json";
 
-            if (Cashing.CashQuery == query && System.IO.File.Exists(jsonFile))
+            if (Cashing.CashQuery == query)
                 lock (Cashing.CashQuery)
                 {
                     return System.IO.File.ReadAllText(jsonFile);

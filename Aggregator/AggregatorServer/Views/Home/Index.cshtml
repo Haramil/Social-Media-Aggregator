@@ -90,7 +90,16 @@
                             '<div class="card">' +
                                 imageBlock +
                                 '<div class="card-content">' +
-                                    '<span class="card-title">' + list[i].Social + '</span>' +
+                                    '<div class="row valign-wrapper">' +
+                                        '<div class="col s3 m3 l3">' +
+                                            '<img src="/Content/' + list[i].Social + '.png" alt="" class="circle responsive-img">' +
+                                        '</div>' +
+                                        '<div class="col s9 m9 l9">' +
+                                            '<p>' + list[i].Social + '</p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="card-content">' +
                                     '<p>' + list[i].Text + '<p>' +
                                 '</div>' +
                                 '<div class="card-content">' +
@@ -135,6 +144,9 @@
                     if (result.Posts.length > 0) {
                         fill(result.Posts);
                         $("#more").show();
+                    }
+                    else {
+                        $("#more").hide();
                     }
 
                 }).always(function () {

@@ -229,6 +229,10 @@
     <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Censure\Censure.csproj">
+      <Project>{49cb385b-02a9-4f9f-b74e-9a9331744aff}</Project>
+      <Name>Censure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InstagramSearcher\InstagramSearcher.csproj">
       <Project>{465807fa-3c07-4876-90c8-121fdbb0ec7c}</Project>
       <Name>InstagramSearcher</Name>

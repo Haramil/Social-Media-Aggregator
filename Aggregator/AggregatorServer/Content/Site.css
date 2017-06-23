@@ -1,6 +1,9 @@
 ﻿p {
     word-wrap: break-word;
 }
+.row {
+    margin-bottom: 0;
+}
 .col {
     margin-bottom: 10px;
 }
