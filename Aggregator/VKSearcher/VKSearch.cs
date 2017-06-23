@@ -142,7 +142,7 @@ namespace VKSearcher
 
             postThreads.ForEach(t => t.Join());
 
-            if (searchResult.Count == 0)
+            if (postThreads.Count == 0)
                 return "retry";
             else
                 return vk.next_from;
