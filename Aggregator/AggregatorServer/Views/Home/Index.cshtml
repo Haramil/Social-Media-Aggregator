@@ -4,9 +4,11 @@
 <div class="container">
     <div class="row" id="search_panel">
         <div class="input-field col s8 m6 offset-s2 offset-m3">
-            <input id="search_input" type="text" class="validate">
+            <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
             <label class="active" for="search_input">Введите поисковый запрос</label>
-            <div class="progress" id="progress"></div>
+            <div class="progress">
+                <div id ="progress_bar"></div>
+            </div>
             <a class="waves-effect waves-light btn" id="search_button">Поиск</a>
         </div>
     </div>
@@ -97,8 +99,6 @@
                             '</div>' +
                         '</a>');
 
-
-
                     var minHeight = selectedCol.height()
 
                     cols.forEach(function (item, i, arr) {
@@ -115,25 +115,30 @@
                 $("#search_panel").animate({
                     "margin-top": 0
                 }, 500, function () {
-                    $("#progress").append('<div class="indeterminate"></div>');
+
                 });
+
+                $("#progress_bar").addClass("indeterminate");
 
                 $.ajax({
                     type: "POST",
                     url: '/Home/Search',
                     data: { query: $("#search_input").val().toString() },
                 }).done(function (data) {
+
                     $("#col1").empty();
                     $("#col2").empty();
                     $("#col3").empty();
 
                     result = JSON.parse(data);
 
-                    fill(result.Posts);
+                    if (result.Posts.length > 0) {
+                        fill(result.Posts);
+                        $("#more").show();
+                    }
 
-                    $("#more").show();
                 }).always(function () {
-                    $("#progress").empty();
+                    $("#progress_bar").removeClass();
                 });
             }
 
@@ -156,7 +161,8 @@
                 $.ajax({
                     type: "POST",
                     url: '/Home/More',
-                    data: { query: result.Query, 
+                    data: {
+                        query: result.Query,
                         vkPage: result.VKPagination, 
                         instPage: result.InstPagination, 
                         twPage: result.TwitterPagination },

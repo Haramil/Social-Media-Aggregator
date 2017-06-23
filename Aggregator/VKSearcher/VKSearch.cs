@@ -93,7 +93,7 @@ namespace VKSearcher
             {
                 response = (HttpWebResponse)request.GetResponse();
             }
-            catch (WebException) { return null; }
+            catch (WebException) { return ""; }
 
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             dynamic vkData = JsonConvert.DeserializeObject(responseString);

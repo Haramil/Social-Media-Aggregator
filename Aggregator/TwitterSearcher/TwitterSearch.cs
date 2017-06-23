@@ -34,7 +34,7 @@ namespace TwitterSearcher
             var url = GetUrl(query, info);
             var twitterresponse = GetTwitterResponse(url);
 
-            if (twitterresponse == null) return null;
+            if (twitterresponse == null) return "";
 
             lock (posts)
             {

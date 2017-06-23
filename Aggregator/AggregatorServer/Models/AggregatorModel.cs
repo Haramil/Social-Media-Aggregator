@@ -67,14 +67,14 @@ namespace AggregatorServer.Models
 
             return searchResult;
         }
+    }
 
-        public class SearchResult
-        {
-            public string Query { get; set; }
-            public List<GeneralPost> Posts { get; set; } = new List<GeneralPost>();
-            public string VKPagination { get; set; }
-            public string InstPagination { get; set; }
-            public string TwitterPagination { get; set; }
-        }
+    public class SearchResult
+    {
+        public string Query { get; set; }
+        public List<GeneralPost> Posts { get; set; } = new List<GeneralPost>();
+        public string VKPagination { get; set; }
+        public string InstPagination { get; set; }
+        public string TwitterPagination { get; set; }
     }
 }
