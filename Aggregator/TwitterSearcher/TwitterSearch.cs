@@ -33,6 +33,9 @@ namespace TwitterSearcher
 
             var url = GetUrl(query, info);
             var twitterresponse = GetTwitterResponse(url);
+
+            if (twitterresponse == null) return null;
+
             lock (posts)
             {
                 posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html));

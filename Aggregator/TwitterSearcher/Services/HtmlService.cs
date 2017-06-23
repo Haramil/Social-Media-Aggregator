@@ -51,6 +51,16 @@ namespace TwitterSearcher.Services
                 tweet.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(long.Parse(d)).ToLocalTime();
             }
             catch { }
+            AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
+            AngleSharp.Dom.Html.IHtmlDocument htmldocument = parser.Parse(tweet.Text);
+
+            var links = htmldocument.QuerySelectorAll("a");
+            
+            foreach (var link in links)
+                tweet.Text = tweet.Text.Replace(link.OuterHtml, link.InnerHtml);
+
+            
+
             lock (posts)
             {
                 posts.Add(tweet);
