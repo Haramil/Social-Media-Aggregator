@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchLibrary", "SearchLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterSearcher", "TwitterSearcher\TwitterSearcher.csproj", "{F370BFEA-B3E9-425C-9799-19F04F17A571}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Censure", "Censure\Censure.csproj", "{49CB385B-02A9-4F9F-B74E-9A9331744AFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F370BFEA-B3E9-425C-9799-19F04F17A571}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CB385B-02A9-4F9F-B74E-9A9331744AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CB385B-02A9-4F9F-B74E-9A9331744AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CB385B-02A9-4F9F-B74E-9A9331744AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CB385B-02A9-4F9F-B74E-9A9331744AFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

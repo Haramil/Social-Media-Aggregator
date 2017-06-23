@@ -28,7 +28,7 @@ namespace TwitterSearcher
             htmlService = new HtmlService();
         }
 
-        public string Search(string query, List<GeneralPost> posts, string info)
+        public string Search(string query, List<GeneralPost> posts, string info, List<string> dict)
         {
 
             var url = GetUrl(query, info);
@@ -38,7 +38,7 @@ namespace TwitterSearcher
 
             lock (posts)
             {
-                posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html));
+                posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html, dict));
             }
             if (twitterresponse.HasMoreItems)
                 return twitterresponse.MinPosition;

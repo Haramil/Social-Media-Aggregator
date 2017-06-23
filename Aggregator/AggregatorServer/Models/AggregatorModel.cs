@@ -5,11 +5,14 @@ using VKSearcher;
 using System.Linq;
 using System.Threading;
 using TwitterSearcher;
+using System.Text.RegularExpressions;
 
 namespace AggregatorServer.Models
 {
     public class AggregatorModel
     {
+        private static List<string> dict = Regex.Split(Properties.Resources.badwords, @"\r?\n|\r").ToList();
+
         private Thread instThread, vkThread, twitterThread;
 
         public SearchResult Search(string query)
@@ -21,9 +24,9 @@ namespace AggregatorServer.Models
             VKSearch vk = new VKSearch();
             TwitterSearch twitter = new TwitterSearch();
 
-            instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts, ""));
-            vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts, ""));
-            twitterThread = new Thread(() => searchResult.TwitterPagination = twitter.Search(query, searchResult.Posts, ""));
+            instThread = new Thread(() => searchResult.InstPagination = instagram.Search(query, searchResult.Posts, "", dict));
+            vkThread = new Thread(() => searchResult.VKPagination = vk.Search(query, searchResult.Posts, "", dict));
+            twitterThread = new Thread(() => searchResult.TwitterPagination = twitter.Search(query, searchResult.Posts, "", dict));
 
             instThread.Start();
             vkThread.Start();
@@ -48,13 +51,13 @@ namespace AggregatorServer.Models
 
             instThread = new Thread(() => searchResult.InstPagination = instPageInfo == "" 
                 ? instPageInfo 
-                : instagram.Search(query, searchResult.Posts, instPageInfo));
+                : instagram.Search(query, searchResult.Posts, instPageInfo, dict));
             vkThread = new Thread(() => searchResult.VKPagination = vkPageInfo == ""
                 ? vkPageInfo
-                : vk.Search(query, searchResult.Posts, vkPageInfo));
+                : vk.Search(query, searchResult.Posts, vkPageInfo, dict));
             twitterThread = new Thread(() => searchResult.TwitterPagination = twitterPageInfo == ""
                 ? twitterPageInfo
-                : twitter.Search(query, searchResult.Posts, twitterPageInfo));
+                : twitter.Search(query, searchResult.Posts, twitterPageInfo, dict));
 
             instThread.Start();
             vkThread.Start();

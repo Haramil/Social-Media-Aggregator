@@ -41,7 +41,7 @@ namespace AggregatorServer.Cash
                             continue;
                         WebRequest requestPic = WebRequest.Create(post.Image);
                         WebResponse responsePic = requestPic.GetResponse();
-                        Image webImage = Image.FromStream(responsePic.GetResponseStream()); // Error
+                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
 
                         post.Image = @"\Cash\Images\" + imageNum + ".jpg";
                         webImage.Save(Path + post.Image);

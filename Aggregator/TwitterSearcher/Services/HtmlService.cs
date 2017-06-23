@@ -1,8 +1,9 @@
-﻿using SearchLibrary;
+﻿using AngleSharp.Dom;
+using Censure;
+using SearchLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AngleSharp.Dom;
 using System.Threading;
 
 namespace TwitterSearcher.Services
@@ -11,7 +12,7 @@ namespace TwitterSearcher.Services
     {
         List<GeneralPost> posts = new List<GeneralPost>();
 
-        public List<GeneralPost> GetTweets(string html)
+        public List<GeneralPost> GetTweets(string html, List<string> dict)
         {
             AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
             AngleSharp.Dom.Html.IHtmlDocument htmldocument = parser.Parse(html);
@@ -21,7 +22,7 @@ namespace TwitterSearcher.Services
             List<Thread> postThreads = new List<Thread>();
             foreach (var item in items)
             {
-                Thread postThread = new Thread(() => PostSearch(item));
+                Thread postThread = new Thread(() => PostSearch(item, dict));
                 postThreads.Add(postThread);
                 postThread.Start();
             }
@@ -29,7 +30,7 @@ namespace TwitterSearcher.Services
             return posts;
         }
 
-        private void PostSearch(IElement item)
+        private void PostSearch(IElement item, List<string> dict)
         {
             GeneralPost tweet = new GeneralPost();
             var h = item.QuerySelectorAll("div").Where(k => k.ClassName.Contains("AdaptiveMediaOuterContainer"));
@@ -40,6 +41,10 @@ namespace TwitterSearcher.Services
             }
             long id = long.Parse(item.Attributes["data-item-id"].Value);
             tweet.Text = item.QuerySelectorAll("p").Where(k => k.ClassName.Contains("tweet-text")).First().InnerHtml;
+
+            Cenzor cenzor = new Cenzor();
+            tweet.Text = cenzor.Cenz(tweet.Text, dict);
+
             tweet.Social = SocialMedia.Twitter;
             tweet.AuthorName = item.QuerySelectorAll("div").Where(k => k.ClassName.Contains("tweet")).First().Attributes["data-name"].Value;
             string linkname = item.QuerySelectorAll("div").Where(k => k.ClassName.Contains("tweet")).First().Attributes["data-screen-name"].Value;

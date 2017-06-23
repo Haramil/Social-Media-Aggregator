@@ -1,21 +1,25 @@
-﻿using Newtonsoft.Json;
+﻿using Censure;
+using Newtonsoft.Json;
 using SearchLibrary;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace InstagramSearcher
 {
     public class InstagramSearch : ISearcher
     {
-        private void PostSearch(dynamic instagramPost, List<GeneralPost> searchResult)
+        private void PostSearch(dynamic instagramPost, List<GeneralPost> searchResult, List<string> dict)
         {
             GeneralPost newPost = new GeneralPost();
 
             newPost.Text = instagramPost.caption;
+
+            Cenzor cenzor = new Cenzor();
+            newPost.Text = cenzor.Cenz(newPost.Text, dict);
+
             newPost.Image = instagramPost.display_src;
             double sec = instagramPost.date;
             newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec);
@@ -37,7 +41,7 @@ namespace InstagramSearcher
             }
         }
 
-        public string Search(string query, List<GeneralPost> searchResult, string pageInfo)
+        public string Search(string query, List<GeneralPost> searchResult, string pageInfo, List<string> dict)
         {
             if (pageInfo != "") pageInfo = "&max_id=" + pageInfo;
 
@@ -57,7 +61,7 @@ namespace InstagramSearcher
             List<Thread> postThreads = new List<Thread>();
             foreach (var instElem in inst.nodes)
             {
-                Thread postThread = new Thread(() => PostSearch(instElem, searchResult));
+                Thread postThread = new Thread(() => PostSearch(instElem, searchResult, dict));
                 postThreads.Add(postThread);
                 postThread.Start();
             }

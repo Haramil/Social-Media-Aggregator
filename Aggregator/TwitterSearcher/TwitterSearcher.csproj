@@ -56,6 +56,10 @@
     <Compile Include="TwitterSearch.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Censure\Censure.csproj">
+      <Project>{49cb385b-02a9-4f9f-b74e-9a9331744aff}</Project>
+      <Name>Censure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SearchLibrary\SearchLibrary.csproj">
       <Project>{ec88b3ce-c338-4b68-9527-a6330965c549}</Project>
       <Name>SearchLibrary</Name>

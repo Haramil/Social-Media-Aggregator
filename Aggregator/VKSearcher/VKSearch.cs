@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Censure;
+using Newtonsoft.Json;
 using SearchLibrary;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace VKSearcher
     {
         Dictionary<int, Author> authors = new Dictionary<int, Author>();
 
-        private void PostSearch(dynamic vkPost, List<GeneralPost> searchResult)
+        private void PostSearch(dynamic vkPost, List<GeneralPost> searchResult, List<string> dict)
         {
             GeneralPost newPost = new GeneralPost();
 
@@ -22,6 +23,9 @@ namespace VKSearcher
                 newPost.Text += Environment.NewLine + vkPost.copy_history.text;
             }
             catch { }
+
+            Cenzor cenzor = new Cenzor();
+            newPost.Text = cenzor.Cenz(newPost.Text, dict);
 
             while (true)
             {
@@ -82,7 +86,7 @@ namespace VKSearcher
             }
         }
 
-        public string Search(string query, List<GeneralPost> searchResult, string pageInfo)
+        public string Search(string query, List<GeneralPost> searchResult, string pageInfo, List<string> dict)
         {
             if (pageInfo != "") pageInfo = "&start_from=" + pageInfo;
 
@@ -99,32 +103,39 @@ namespace VKSearcher
             dynamic vkData = JsonConvert.DeserializeObject(responseString);
             var vk = vkData.response;
 
-            foreach (var profile in vk.profiles)
+            try
             {
-                int id = profile.id;
-                authors.Add(id, new Author
+                foreach (var profile in vk.profiles)
                 {
-                    ScreenName = profile.screen_name,
-                    Name = profile.first_name + " " + profile.last_name,
-                    Photo = profile.photo_100
-                });
-            }
-            foreach (var group in vk.groups)
+                    int id = profile.id;
+                    authors.Add(id, new Author
+                    {
+                        ScreenName = profile.screen_name,
+                        Name = profile.first_name + " " + profile.last_name,
+                        Photo = profile.photo_100
+                    });
+                }
+            } catch { }
+            try
             {
-                int id = group.id;
-                id = -id;
-                authors.Add(id, new Author
+                foreach (var group in vk.groups)
                 {
-                    ScreenName = group.screen_name,
-                    Name = group.name,
-                    Photo = group.photo_200
-                });
+                    int id = group.id;
+                    id = -id;
+                    authors.Add(id, new Author
+                    {
+                        ScreenName = group.screen_name,
+                        Name = group.name,
+                        Photo = group.photo_200
+                    });
+                }
             }
+            catch { }
 
             List<Thread> postThreads = new List<Thread>();
             foreach (var item in vk.items)
             {
-                Thread postThread = new Thread(() => PostSearch(item, searchResult));
+                Thread postThread = new Thread(() => PostSearch(item, searchResult, dict));
                 postThreads.Add(postThread);
                 postThread.Start();
             }
