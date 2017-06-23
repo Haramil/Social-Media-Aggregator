@@ -19,10 +19,10 @@ namespace AggregatorServer.Controllers
         }
 
         [HttpPost]
-        public string More(string query, string vkPage, string instPage)
+        public string More(string query, string vkPage, string instPage, string twPage)
         {
             AggregatorModel aggregator = new AggregatorModel();
-            return JsonConvert.SerializeObject(aggregator.More(query, vkPage, instPage));
+            return JsonConvert.SerializeObject(aggregator.More(query, vkPage, instPage, twPage));
         }
     }
 }

@@ -97,6 +97,8 @@
                             '</div>' +
                         '</a>');
 
+
+
                     var minHeight = selectedCol.height()
 
                     cols.forEach(function (item, i, arr) {
@@ -154,7 +156,10 @@
                 $.ajax({
                     type: "POST",
                     url: '/Home/More',
-                    data: { query: result.Query, vkPage: result.VKPagination, instPage: result.InstPagination },
+                    data: { query: result.Query, 
+                        vkPage: result.VKPagination, 
+                        instPage: result.InstPagination, 
+                        twPage: result.TwitterPagination },
                 }).done(function (data) {
 
                     result = JSON.parse(data);
