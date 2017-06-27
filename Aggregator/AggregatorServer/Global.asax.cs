@@ -14,9 +14,6 @@ namespace AggregatorServer
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-            Thread cashThread = new Thread(() => Cashing.Start());
-            cashThread.Start();
         }
     }
 }

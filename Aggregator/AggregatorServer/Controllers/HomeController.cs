@@ -1,7 +1,8 @@
 ﻿using AggregatorServer.Models;
 using Newtonsoft.Json;
+using SearchLibrary;
+using System.Collections.Generic;
 using System.Web.Mvc;
-using AggregatorServer.Cash;
 
 namespace AggregatorServer.Controllers
 {
@@ -17,15 +18,29 @@ namespace AggregatorServer.Controllers
         [HttpPost]
         public string Search(string query)
         {
-            string jsonFile = Cashing.Path + @"Cash\" + Cashing.CashQuery + ".json";
 
-            if (Cashing.CashQuery == query)
-                lock (Cashing.CashQuery)
-                {
-                    return System.IO.File.ReadAllText(jsonFile);
-                }
+            DBWorker dbworker = new DBWorker();
+            List<GeneralPost> posts = dbworker.GetAllPostsByHashTag(query);
+            if (posts.Count != 0)
+            {
+                Pagination pag = dbworker.GetPaginations(query);
+                SearchResult res = new SearchResult();
+                res.Posts = posts;
+                res.InstPagination = pag.InstagrammPagination;
+                res.VKPagination = pag.VKPagination;
+                res.TwitterPagination = pag.TwitterPagination;
+                res.Query = query;
+                return JsonConvert.SerializeObject(res);
+            }
 
             AggregatorModel aggregator = new AggregatorModel();
+           /* SearchResult y=aggregator.Search(query);
+            Session["list"] = new List<GeneralPost>(y.Posts);
+            y.Posts.Clear();
+            GeneralPost[] temp = new GeneralPost[20];
+            List<GeneralPost> y2 = Session["list"] as List<GeneralPost>;
+            y2.CopyTo(0, temp, 0, 20);
+            y.Posts = new List<GeneralPost>(temp);*/
             return JsonConvert.SerializeObject(aggregator.Search(query));
         }
 

@@ -9,50 +9,75 @@ using Newtonsoft.Json;
 using System.Web.Hosting;
 using System.Net;
 using System.Drawing;
+using SearchLibrary;
 
 namespace AggregatorServer.Cash
 {
     public class Cashing
     {
-        public static string CashQuery = "nastachku";
         public static string Path = HostingEnvironment.ApplicationPhysicalPath;
 
-        public static void Start()
+        public static SearchResult Cash(string cashquery)
         {
-            while (true)
+            if (!Directory.Exists((Path + @"Cash\" + cashquery)))
+                Directory.CreateDirectory(Path + @"Cash\" + cashquery);
+            List<string> files = Directory.EnumerateFiles(Path + @"Cash\" + cashquery).ToList();
+
+            files.ForEach(file =>
             {
-                lock (CashQuery)
+                File.Delete(file);
+            });
+
+            int imageNum = 0;
+            object lockObj = new object();
+
+            AggregatorModel model = new AggregatorModel();
+            SearchResult result = model.Search(cashquery);
+
+            List<Thread> imageThreads = new List<Thread>();
+
+            foreach (var post in result.Posts)
+            {
+                if (post.Image == "")
+                    continue;
+
+                Thread thread = new Thread(() =>
                 {
-                    List<string> files = Directory.EnumerateFiles(Path + @"Cash\Images\").ToList();
+                    WebRequest requestPic = WebRequest.Create(post.Image);
+                    WebResponse responsePic = requestPic.GetResponse();
+                    Image webImage = Image.FromStream(responsePic.GetResponseStream());
 
-                    files.ForEach(file =>
-                    {
-                        File.Delete(file);
-                    });
-
-                    int imageNum = 0;
-
-                    AggregatorModel model = new AggregatorModel();
-                    SearchResult result = model.Search(CashQuery);
-
-                    foreach (var post in result.Posts)
-                    {
-                        if (post.Image == "")
-                            continue;
-                        WebRequest requestPic = WebRequest.Create(post.Image);
-                        WebResponse responsePic = requestPic.GetResponse();
-                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
-
-                        post.Image = @"\Cash\Images\" + imageNum + ".jpg";
+                    lock (lockObj) {
+                        post.Image = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
                         webImage.Save(Path + post.Image);
-
                         imageNum++;
                     }
+                });
 
-                    File.WriteAllText(Path + @"Cash\" + CashQuery + ".json", JsonConvert.SerializeObject(result));
-                }
-                Thread.Sleep(new TimeSpan(1, 0, 0));
+                imageThreads.Add(thread);
+                thread.Start();
+                
             }
+
+            foreach (Thread thread in imageThreads)
+            {
+                thread.Join();
+            }
+
+            DBWorker dbworker = new DBWorker();
+            dbworker.DeleteAllPostsByHashTag(null);
+            dbworker.DeleteAllPostsByHashTag(cashquery);
+            dbworker.DeletePagination(cashquery);
+            dbworker.AddAllPosts(result.Posts, cashquery);
+            dbworker.AddPagination(new Pagination()
+            {
+                VKPagination = result.VKPagination,
+                InstagrammPagination = result.InstPagination,
+                TwitterPagination = result.TwitterPagination,
+                HashTag = cashquery
+            });
+
+            return result;
         }
     }
 }

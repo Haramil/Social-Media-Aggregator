@@ -2,11 +2,18 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SearchLibrary
 {
     public class GeneralPost
     {
+        [Key]
+        [JsonIgnore]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
         public DateTime Date { get; set; }
 
         public string AuthorName { get; set; } = "";
@@ -21,6 +28,10 @@ namespace SearchLibrary
         public string Text { get; set; }
 
         public string Image { get; set; } = "";
+        public string AuthorLink { get; set; } = "";
+
+        [JsonIgnore]
+        public string HashTag { get; set; }
     }
 
     public enum SocialMedia

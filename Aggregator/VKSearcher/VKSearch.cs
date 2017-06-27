@@ -43,7 +43,7 @@ namespace VKSearcher
             newPost.Social = SocialMedia.VK;
 
             double sec = vkPost.date;
-            newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec);
+            newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec).ToLocalTime();
 
             try
             {
@@ -79,7 +79,7 @@ namespace VKSearcher
             string ownerID = vkPost.owner_id;
             string ID = vkPost.id;
             newPost.PostLink = "https://vk.com/" + screenName + "?w=wall" + ownerID + "_" + ID;
-
+            newPost.AuthorLink = "https://vk.com/" + screenName;
             lock (searchResult)
             {
                 searchResult.Add(newPost);
@@ -98,9 +98,7 @@ namespace VKSearcher
                 var response = (HttpWebResponse)request.GetResponse();
                 responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
-            catch {
-                return "";
-            }
+            catch { return pageInfo; }
 
             dynamic vkData = JsonConvert.DeserializeObject(responseString);
             var vk = vkData.response;
@@ -149,7 +147,7 @@ namespace VKSearcher
             }
             catch
             {
-                return "retry";
+                return pageInfo;
             }
         }
 

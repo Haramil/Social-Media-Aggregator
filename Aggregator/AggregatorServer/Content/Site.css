@@ -16,3 +16,12 @@ a {
 #search_panel{
     margin-top: 150px;
 }
+.myownlink{
+    cursor:pointer;
+}
+.myownlink:hover{
+    text-decoration:underline;
+}
+.mylink2{
+ cursor:pointer;
+}

@@ -1,0 +1,239 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Регистрация тега";
+}
+<div class="container">
+    <div class="row" id="search_panel">
+
+        <div class="input-field col s8 m6 offset-s2 offset-m3">
+            <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
+            <label class="active" for="search_input">Введите тег</label>
+            <div class="progress">
+                <div id="progress_bar"></div>
+            </div>
+            <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" onclick="regtag()">Зарегистрировать тег</a>&nbsp&nbsp
+            <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="/Home/Index">На главную</a>
+        </div>
+    </div>
+</div>
+<div id="modal1" class="modal" style="overflow:hidden;">
+    <div class="modal-content">
+        <h4 style="text-align:center;" id="headeruser">Вход</h4>
+        <div class="row">
+            <form class="col s19 m12 l10" id="myform">
+                <div class="row">
+                    <div class="input-field col  offset-s2 offset-m3 offset-l4 s10 m6 l6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input id="icon_prefix" type="text" class="validate">
+                        <label for="icon_prefix">Логин</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_login">Введите логин</p>
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="input-field col   offset-s2 offset-m3 offset-l4 s10  m6 l6">
+                        <i class="material-icons prefix">vpn_key</i>
+                        <input id="icon_telephone" type="password" class="validate" required="" aria-required="true">
+                        <label for="icon_telephone">Пароль</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_password">Введите пароль</p>
+                    <br />
+                </div>
+                <div class="row">
+                    <p style="color:green;text-align:center;" class="hide" id="bdsuccess">Вы успешно авторизованы</p>
+                    <p style="color:red;" class="hide" id="bderror">Неверный логин или пароль</p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn waves-light" style="margin-right:2%">Закрыть</a>
+        <a class="waves-effect waves-green btn waves-light" id="autorize" style="margin-right:2%;">Вход</a>
+        <div class="preloader-wrapper small" id="connectdatabase">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col s12 m6 l4" id="col1">
+        </div>
+        <div class="col s12 m6 l4" id="col2">
+        </div>
+        <div class="col s12 m12 l4" id="col3">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col s2 m2 l2">
+            <div class="preloader-wrapper big" id="load_more">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $('#search_input').keyup(function (e) {
+            if (e.keyCode == 13) {
+                regtag();
+            }
+        });
+
+        var block = false;
+        var result;
+        var listresult = [];
+        function fill(list, len) {
+            var cols = [$("#col1")];
+            if ($("#col2").offset().left > $("#col1").offset().left)
+                cols.push($("#col2"));
+            if ($("#col3").offset().left > $("#col1").offset().left)
+                cols.push($("#col3"));
+
+            var selectedCol = cols[0];
+
+            for (var i = 0; i < len; i++) {
+
+                var imageBlock = "";
+                if (list[0].Image != "")
+                    imageBlock = '<a href="' + list[0].PostLink + '" target="_blank">' + '<div class="card-image">' +
+                                    '<img src="' + list[0].Image + '">' +
+                                '</div>' + '</a>';
+                var footer = "";
+                hours = "";
+                if (new Date(list[0].Date).toLocaleTimeString().split(':')[0].length == 1) {
+                    hours = "0" + new Date(list[0].Date).toLocaleTimeString().split(':')[0];
+                } else {
+                    hours = new Date(list[0].Date).toLocaleTimeString().split(':')[0];
+                }
+                if (list[0].AuthorName != "") {
+
+
+                    footer = '<div class="row valign-wrapper card-action">' +
+                                    '<div class="col s3 m3 l3">' +
+                                        '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
+                                    '</div>' +
+                                    '<div class="col s9 m9 l9 mylink2 " id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
+                                        '<p class="myownlink" id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' + list[0].AuthorName + '</p>' +
+                                        '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
+                                    '</div>' +
+                                '</div>';
+
+
+                }
+                else {
+                    footer = '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>';
+                }
+                selectedCol.append(
+                        '<div class="card" style="cursor:pointer;" id="' + list[0].PostLink + '" onClick="window.open(this.id)">' +
+                            imageBlock + '<a href="' + list[0].PostLink + '" target="_blank">' +
+                            '<div class="card-content">' +
+                                '<div class="row valign-wrapper">' +
+                                    '<div class="col s2 m2 l2">' +
+                                        '<img src="/Content/' + list[0].Social + '.png" alt="" class="circle responsive-img">' +
+                                    '</div>' +
+                                    '<div class="col s9 m9 l9">' +
+                                        '<p>' + list[0].Social + '</p>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' + '</a>' + '<a href="' + list[0].PostLink + '" target="_blank">' +
+                            '<div class="card-content">' +
+                                '<p>' + list[0].Text + '<p>' +
+                            '</div>' + '</a>' +
+                            '<div class="card-content"id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
+                                footer +
+                            '</div>' +
+                        '</div>');
+
+                var minHeight = selectedCol.height()
+
+                cols.forEach(function (item, i, arr) {
+                    if (item.height() < minHeight) {
+                        selectedCol = item;
+                        minHeight = item.height();
+                    }
+                });
+                listresult.splice(0, 1);
+            }
+        };
+        function copylists(list) {
+            var temp = [];
+            for (var i = 0; i < list.length; i++) {
+                temp[i] = {};
+                temp[i].Image = list[i].Image;
+                temp[i].AuthorName = list[i].AuthorName;
+                temp[i].AuthorAvatar = list[i].AuthorAvatar;
+                temp[i].Social = list[i].Social;
+                temp[i].Text = list[i].Text;
+                temp[i].Date = list[i].Date;
+                temp[i].PostLink = list[i].PostLink;
+                temp[i].AuthorLink = list[i].AuthorLink;
+            }
+            listresult = listresult.concat(temp);
+            console.log(listresult);
+        }
+        function regtag() {
+
+            if ($("#search_input").val() != "") {
+                $("#search_panel").animate({
+                    "margin-top": 0
+                }, 500, function () {
+
+                });
+                $("#progress_bar").addClass("indeterminate");
+                $.ajax({
+                    type: "POST",
+                    url: '/Account/AddHashTag2',
+                    data: { query: $("#search_input").val().toString() },
+                }).done(function (data) {
+
+                    $("#col1").empty();
+                    $("#col2").empty();
+                    $("#col3").empty();
+
+                    result = JSON.parse(data);
+
+                    if (result.Posts.length > 0) {
+                        block = false;
+                        listresult = [];
+                        copylists(result.Posts);
+                        console.log(listresult);
+                        if (listresult.length >= 20)
+                            fill(listresult, 20);
+                        else {
+                            fill(listresult, listresult.length);
+                            block = true;
+                        }
+                    }
+                }).always(function () {
+                    $("#progress_bar").removeClass();
+                });
+            }
+        }
+
+    </script>
+}

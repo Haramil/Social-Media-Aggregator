@@ -5,15 +5,83 @@
     <div class="row" id="search_panel">
         <div class="input-field col s8 m6 offset-s2 offset-m3">
             <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
-            <label class="active" for="search_input">Введите поисковый запрос</label>
+            <label class="active" for="search_input">Введите тег</label>
             <div class="progress">
-                <div id ="progress_bar"></div>
+                <div id="progress_bar"></div>
             </div>
-            <a class="waves-effect waves-light btn" id="search_button">Поиск</a>
+
+            @if (Request.IsAuthenticated)
+            {
+                using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <a class="waves-effect waves-light btn left" id="search_button" style="display:inline-block;margin-right:2%;margin-top:2%;">Поиск</a>
+                    <a href="/Account/AddHashTag" class="waves-effect waves-light btn left" style="display:inline-block;margin-right:2%;margin-top:2%;">Регистрация тега</a>
+                    <a class="waves-effect waves-light btn left" style="display:inline-block;margin-right:2%;margin-top:2%;" href="javascript:document.getElementById('logoutForm').submit()">Выйти</a>
+                }
+
+            }
+            else
+            {
+                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" id="search_button">Поиск</a>
+                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="http://localhost:49770/Account/Login">Войти</a>
+                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="http://localhost:49770/Account/Register">Регистрация</a>
+            }
+
         </div>
     </div>
 </div>
+<div id="modal1" class="modal" style="overflow:hidden;">
+    <div class="modal-content">
+        <h4 style="text-align:center;" id="headeruser">Вход</h4>
+        <div class="row">
+            <form class="col s19 m12 l10" id="myform">
+                <div class="row">
+                    <div class="input-field col  offset-s2 offset-m3 offset-l4 s10 m6 l6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input id="icon_prefix" type="text" class="validate">
+                        <label for="icon_prefix">Логин</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_login">Введите логин</p>
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="input-field col   offset-s2 offset-m3 offset-l4 s10  m6 l6">
+                        <i class="material-icons prefix">vpn_key</i>
+                        <input id="icon_telephone" type="password" class="validate" required="" aria-required="true">
+                        <label for="icon_telephone">Пароль</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_password">Введите пароль</p>
+                    <br />
+                </div>
+                <div class="row">
+                    <p style="color:green;text-align:center;" class="hide" id="bdsuccess">Вы успешно авторизованы</p>
+                    <p style="color:red;text-align:center;" class="hide" id="bderror">Неверный логин или пароль</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn waves-light" style="margin-right:2%">Закрыть</a>
 
+
+        <div class="preloader-wrapper small" id="connectdatabase">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="col s12 m6 l4" id="col1">
@@ -25,21 +93,16 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col s2 m2 l2 offset-s4 offset-m4 offset-l4" id="more">
-            <a class="waves-effect waves-light btn" id="more_button">Ещё</a>
-        </div>
-        <div class="col s2 m2 l2">
-            <div class="preloader-wrapper big" id="load_more">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div><div class="gap-patch">
-                        <div class="circle"></div>
-                    </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
+<div class="container center-block">
+    <div class="col s12 m4 center">
+        <div class="preloader-wrapper big" id="load_more">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
                 </div>
             </div>
         </div>
@@ -47,16 +110,15 @@
 </div>
 
 
-
 @section scripts{
     <script type="text/javascript">
+        var block = false;
+        var result;
+        var listresult = [];
         $(function () {
 
-            var result;
-
-            function fill(list) {
+            function fill(list, len) {
                 var cols = [$("#col1")];
-
                 if ($("#col2").offset().left > $("#col1").offset().left)
                     cols.push($("#col2"));
                 if ($("#col3").offset().left > $("#col1").offset().left)
@@ -64,49 +126,58 @@
 
                 var selectedCol = cols[0];
 
-                for (i = 0; i < list.length; i++) {
+                for (var i = 0; i < len; i++) {
 
                     var imageBlock = "";
-                    if (list[i].Image != "")
-                        imageBlock = '<div class="card-image">' +
-                                        '<img src="' + list[i].Image + '">' +
-                                    '</div>';
+                    if (list[0].Image != "")
+                        imageBlock = '<a href="' + list[0].PostLink + '" target="_blank">' + '<div class="card-image">' +
+                                        '<img src="' + list[0].Image + '">' +
+                                    '</div>' + '</a>';
                     var footer = "";
-                    if (list[i].AuthorName != "")
-                        footer = '<div class="row valign-wrapper">' +
-                                    '<div class="col s3 m3 l3">' +
-                                        '<img src="' + list[i].AuthorAvatar + '" alt="" class="circle responsive-img">' +
-                                    '</div>' +
-                                    '<div class="col s9 m9 l9">' +
-                                        '<p>' + list[i].AuthorName + '</p>' +
-                                        '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>' +
-                                    '</div>' +
-                                '</div>';
+                    hours = "";
+                    if (new Date(list[0].Date).toLocaleTimeString().split(':')[0].length == 1) {
+                        hours = "0" + new Date(list[0].Date).toLocaleTimeString().split(':')[0];
+                    } else {
+                        hours = new Date(list[0].Date).toLocaleTimeString().split(':')[0];
+                    }
+                    if (list[0].AuthorName != "") {
+
+
+                        footer = '<div class="row valign-wrapper card-action">' +
+                                        '<div class="col s3 m3 l3">' +
+                                            '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
+                                        '</div>' +
+                                        '<div class="col s9 m9 l9 mylink2 " id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
+                                            '<p class="myownlink" id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' + list[0].AuthorName + '</p>' +
+                                            '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
+                                        '</div>' +
+                                    '</div>';
+
+
+                    }
                     else {
-                        footer = '<p>' + new Date(list[i].Date).toLocaleDateString() + '</p>';
+                        footer = '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>';
                     }
                     selectedCol.append(
-                        '<a href="' + list[i].PostLink + '" target="_blank">' +
-                            '<div class="card">' +
-                                imageBlock +
+                            '<div class="card" style="cursor:pointer;" id="' + list[0].PostLink + '" onClick="window.open(this.id)">' +
+                                imageBlock + '<a href="' + list[0].PostLink + '" target="_blank">' +
                                 '<div class="card-content">' +
                                     '<div class="row valign-wrapper">' +
-                                        '<div class="col s3 m3 l3">' +
-                                            '<img src="/Content/' + list[i].Social + '.png" alt="" class="circle responsive-img">' +
+                                        '<div class="col s2 m2 l2">' +
+                                            '<img src="/Content/' + list[0].Social + '.png" alt="" class="circle responsive-img">' +
                                         '</div>' +
                                         '<div class="col s9 m9 l9">' +
-                                            '<p>' + list[i].Social + '</p>' +
+                                            '<p>' + list[0].Social + '</p>' +
                                         '</div>' +
                                     '</div>' +
-                                '</div>' +
+                                '</div>' + '</a>' + '<a href="' + list[0].PostLink + '" target="_blank">' +
                                 '<div class="card-content">' +
-                                    '<p>' + list[i].Text + '<p>' +
-                                '</div>' +
-                                '<div class="card-content">' +
+                                    '<p>' + list[0].Text + '<p>' +
+                                '</div>' + '</a>' +
+                                '<div class="card-content"id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
                                     footer +
                                 '</div>' +
-                            '</div>' +
-                        '</a>');
+                            '</div>');
 
                     var minHeight = selectedCol.height()
 
@@ -116,11 +187,14 @@
                             minHeight = item.height();
                         }
                     });
+                    listresult.splice(0, 1);
                 }
-            };
+            }
+
 
             function search() {
 
+                blck = false;
                 $("#search_panel").animate({
                     "margin-top": 0
                 }, 500, function () {
@@ -142,11 +216,17 @@
                     result = JSON.parse(data);
 
                     if (result.Posts.length > 0) {
-                        fill(result.Posts);
-                        $("#more").show();
-                    }
-                    else {
-                        $("#more").hide();
+                        block = false;
+                        listresult = [];
+                        copylists(result.Posts);
+                        if (listresult.length >= 20)
+                            fill(listresult, 20);
+                        else {
+                            if (listresult.length > 0)
+                                fill(listresult, listresult.length);
+                        }
+                    } else {
+                        block = true;
                     }
 
                 }).always(function () {
@@ -167,31 +247,119 @@
                 search();
             });
 
-            $("#more_button").click(function () {
-
-                $("#more_button").hide();
-
-                $("#load_more").addClass("active");
-
-                $.ajax({
-                    type: "POST",
-                    url: '/Home/More',
-                    data: {
-                        query: result.Query,
-                        vkPage: result.VKPagination, 
-                        instPage: result.InstPagination, 
-                        twPage: result.TwitterPagination },
-                }).done(function (data) {
-
-                    result = JSON.parse(data);
-                    fill(result.Posts);
-
-                }).always(function (data) {
-                    $("#more_button").show();
-                    $("#load_more").removeClass("active");
-                });
+            $("login").click(function () {
+                selectedCol.append('<a href="' + list[0].PostLink + '" target="_blank">');
             });
 
+            $(window).scroll(function () {
+
+                if ($(window).height() + $(window).scrollTop() >= $(document).height() / 1.5) {
+                    $("#load_more").addClass("active");
+                    if (listresult.length <= 20) {
+                        fill(listresult, listresult.length);
+                        if (!block) {
+                            fill(listresult, listresult.length);
+                            block = true;
+                            $.ajax({
+                                type: "POST",
+                                url: '/Home/More',
+                                data: {
+                                    query: result.Query,
+                                    vkPage: result.VKPagination,
+                                    instPage: result.InstPagination,
+                                    twPage: result.TwitterPagination
+                                },
+                            }).done(function (data) {
+                                result = JSON.parse(data);;
+                                if (result.Posts.length > 0)
+                                    copylists(result.Posts);
+                                else block = true;
+                            }).always(function (data) {
+                                $("#load_more").removeClass("active");
+                                block = false;
+                            });
+                        }
+                        return;
+                    }
+                    if (listresult != null && listresult.length != 0 && listresult.length - 20 >= 20) {
+                        fill(listresult, 20);
+                        $("#load_more").removeClass("active");
+                    } else {
+                        if (!block) {
+                            fill(listresult, listresult.length);
+                            block = true;
+                            $.ajax({
+                                type: "POST",
+                                url: '/Home/More',
+                                data: {
+                                    query: result.Query,
+                                    vkPage: result.VKPagination,
+                                    instPage: result.InstPagination,
+                                    twPage: result.TwitterPagination
+                                },
+                            }).done(function (data) {
+                                result = JSON.parse(data);;
+                                if (result.Posts.length > 0)
+                                    copylists(result.Posts);
+                                else block = true;
+                            }).always(function (data) {
+                                $("#load_more").removeClass("active");
+                                block = false;
+                            });
+                        }
+                    }
+                }
+            });
+
+            function copylists(list) {
+                var temp = [];
+                for (var i = 0; i < list.length; i++) {
+                    temp[i] = {};
+                    temp[i].Image = list[i].Image;
+                    temp[i].AuthorName = list[i].AuthorName;
+                    temp[i].AuthorAvatar = list[i].AuthorAvatar;
+                    temp[i].Social = list[i].Social;
+                    temp[i].Text = list[i].Text;
+                    temp[i].Date = list[i].Date;
+                    temp[i].PostLink = list[i].PostLink;
+                    temp[i].AuthorLink = list[i].AuthorLink;
+                }
+                listresult = listresult.concat(temp);
+                console.log(listresult);
+            }
+
+        });
+        $('.modal-trigger').leanModal();
+        $("#autorize").click(function () {
+
+            if ($("#icon_prefix").val() != "") {
+                $("#valid_login").addClass("hide");
+            } else {
+                $("#valid_login").removeClass("hide");
+            }
+            if ($("#icon_telephone").val() != "") {
+                $("#valid_password").addClass("hide");
+            } else {
+                $("#valid_password").removeClass("hide");
+            }
+            if ($("#icon_prefix").val() == "" || $("#icon_telephone").val() == "") {
+                return;
+            }
+            $("#connectdatabase").addClass("active");
+            $.ajax({
+                type: "POST",
+                url: '/Account/Login2',
+                data: { login: $("#icon_prefix").val().toString(), password: $("#icon_telephone").val().toString() },
+            }).done(function (data) {
+                if (data == "bad request") {
+                    $("#bderror").removeClass("hide");
+                    $("#connectdatabase").removeClass("active");
+                } else {
+                    $("#bdsuccess").removeClass("hide");
+                    $("#connectdatabase").removeClass("active");
+                    $("#search").append('<br><p style="display:inline-block;margin-right:2%;" id="rgtg"><a class="waves-effect waves-light btn" style="font-size:70%;" onClick="regtag()" >Зарегистрировать тег</a></p>');
+                }
+            });
         });
     </script>
 }

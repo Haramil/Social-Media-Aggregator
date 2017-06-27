@@ -22,19 +22,25 @@ namespace InstagramSearcher
 
             newPost.Image = instagramPost.display_src;
             double sec = instagramPost.date;
-            newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec);
+            newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec).ToLocalTime();
             newPost.PostLink = "https://www.instagram.com/p/" + instagramPost.code;
-
-            var request = (HttpWebRequest)WebRequest.Create(newPost.PostLink + "/?__a=1");
-            var response = (HttpWebResponse)request.GetResponse();
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-            dynamic instPostData = JsonConvert.DeserializeObject(responseString);
-            var instAuthor = instPostData.graphql.shortcode_media.owner;
-
-            newPost.AuthorName = instAuthor.username;
-            newPost.AuthorAvatar = instAuthor.profile_pic_url;
             newPost.Social = SocialMedia.Instagram;
 
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(newPost.PostLink + "/?__a=1");
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+                dynamic instPostData = JsonConvert.DeserializeObject(responseString);
+                var instAuthor = instPostData.graphql.shortcode_media.owner;
+
+                newPost.AuthorName = instAuthor.username;
+                newPost.AuthorLink = "https://www.instagram.com/" + newPost.AuthorName;
+                newPost.AuthorAvatar = instAuthor.profile_pic_url;
+            }
+            catch { }
+            
             lock (searchResult)
             {
                 searchResult.Add(newPost);
@@ -46,30 +52,34 @@ namespace InstagramSearcher
             if (pageInfo != "") pageInfo = "&max_id=" + pageInfo;
 
             string responseString;
-
+          
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create("https://www.instagram.com/explore/tags/" + query + "/?__a=1" + pageInfo);
                 var response = (HttpWebResponse)request.GetResponse();
                 responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
-            catch { return ""; }
+            catch { return pageInfo; }
 
             dynamic instData = JsonConvert.DeserializeObject(responseString);
             var inst = instData.tag.media;
-
-            List<Thread> postThreads = new List<Thread>();
-            foreach (var instElem in inst.nodes)
+            try
             {
-                Thread postThread = new Thread(() => PostSearch(instElem, searchResult, dict));
-                postThreads.Add(postThread);
-                postThread.Start();
+                List<Thread> postThreads = new List<Thread>();
+                foreach (var instElem in inst.nodes)
+                {
+                    Thread postThread = new Thread(() => PostSearch(instElem, searchResult, dict));
+                    postThreads.Add(postThread);
+                    postThread.Start();
+                }
+
+                postThreads.ForEach(t => t.Join());
+                return inst.page_info.end_cursor;
             }
-
-            postThreads.ForEach(t => t.Join());
-
-            string page = inst.page_info.end_cursor;
-            return page;
+            catch
+            {
+                return pageInfo;
+            }
         }
     }
 }

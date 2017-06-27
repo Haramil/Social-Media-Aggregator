@@ -13,7 +13,7 @@ namespace TwitterSearcher
 {
     public class TwitterSearch : ISearcher
     {
-        private string searchurl = "https://twitter.com/i/search/timeline";
+        private string searchurl = "https://twitter.com/i/search/timeline%23";
         private string Query = "q";
         private string RealTime = "f";
         private string Src = "src";
@@ -31,7 +31,7 @@ namespace TwitterSearcher
         public string Search(string query, List<GeneralPost> posts, string info, List<string> dict)
         {
 
-            var url = GetUrl(query, info);
+            var url = "https://twitter.com/i/search/timeline?f=realtime&q=%23"+query+"&src=typd&max_position="+info;
             var twitterresponse = GetTwitterResponse(url);
 
             if (twitterresponse == null) return "";
@@ -40,7 +40,7 @@ namespace TwitterSearcher
             {
                 posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html, dict));
             }
-            if (twitterresponse.HasMoreItems)
+            if (twitterresponse.MinPosition!="" && twitterresponse.MinPosition!=info)
                 return twitterresponse.MinPosition;
             else return "";
         }
@@ -52,11 +52,11 @@ namespace TwitterSearcher
             var uriBuilder = new UriBuilder(searchurl);
             var parameters = HttpUtility.ParseQueryString(string.Empty);
             parameters[RealTime] = "realtime";
-            parameters[Query] = "%23" + query;
+            parameters[Query] = query;
             parameters[Src] = "typd";
-            parameters[IncludeFeatures] = "1";
+           /* parameters[IncludeFeatures] = "1";
             parameters[IncludeEntities] = "1";
-            parameters[LastNodeTs] = "85";
+            parameters[LastNodeTs] = "85";*/
             parameters[MaxPosition] = info;
             uriBuilder.Query = parameters.ToString();
             Uri finalUrl = uriBuilder.Uri;
