@@ -130,9 +130,9 @@
 
                     var imageBlock = "";
                     if (list[0].Image != "")
-                        imageBlock = '<a href="' + list[0].PostLink + '" target="_blank">' + '<div class="card-image">' +
+                        imageBlock = '<div class="card-image">' +
                                         '<img src="' + list[0].Image + '">' +
-                                    '</div>' + '</a>';
+                                    '</div>';
                     var footer = "";
                     hours = "";
                     if (new Date(list[0].Date).toLocaleTimeString().split(':')[0].length == 1) {
@@ -144,14 +144,14 @@
 
 
                         footer = '<div class="row valign-wrapper card-action">' +
-                                        '<div class="col s3 m3 l3">' +
-                                            '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
-                                        '</div>' +
-                                        '<div class="col s9 m9 l9 mylink2 " id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
-                                            '<p class="myownlink" id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' + list[0].AuthorName + '</p>' +
-                                            '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
-                                        '</div>' +
-                                    '</div>';
+                                    '<div class="col s4">' +
+                                        '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
+                                    '</div>' +
+                                    '<div class="col s8">' +
+                                        '<p>' + list[0].AuthorName + '</p>' +
+                                        '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
+                                    '</div>' +
+                                '</div>';
 
 
                     }
@@ -159,24 +159,26 @@
                         footer = '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>';
                     }
                     selectedCol.append(
-                            '<div class="card" style="cursor:pointer;" id="' + list[0].PostLink + '" onClick="window.open(this.id)">' +
-                                imageBlock + '<a href="' + list[0].PostLink + '" target="_blank">' +
-                                '<div class="card-content">' +
+                            '<div class="card">' +
+                                '<a href="' + list[0].PostLink + '" target="_blank">' + imageBlock +
+                                '<div class="card-content social-content">' +
                                     '<div class="row valign-wrapper">' +
-                                        '<div class="col s2 m2 l2">' +
+                                        '<div class="col s3">' +
                                             '<img src="/Content/' + list[0].Social + '.png" alt="" class="circle responsive-img">' +
                                         '</div>' +
-                                        '<div class="col s9 m9 l9">' +
+                                        '<div class="col s9">' +
                                             '<p>' + list[0].Social + '</p>' +
                                         '</div>' +
                                     '</div>' +
-                                '</div>' + '</a>' + '<a href="' + list[0].PostLink + '" target="_blank">' +
-                                '<div class="card-content">' +
+                                '</div>' +
+                                '<div class="card-content text-content">' +
                                     '<p>' + list[0].Text + '<p>' +
                                 '</div>' + '</a>' +
-                                '<div class="card-content"id="' + list[0].AuthorLink + '" onClick="window.open(this.id)">' +
-                                    footer +
-                                '</div>' +
+                                '<a href="' + list[0].AuthorLink + '" target="_blank">' +
+                                    '<div class="card-content author-content">' +
+                                        footer +
+                                    '</div>' +
+                                '</a>' +
                             '</div>');
 
                     var minHeight = selectedCol.height()
