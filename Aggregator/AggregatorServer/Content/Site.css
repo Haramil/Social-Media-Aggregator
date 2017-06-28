@@ -16,12 +16,13 @@ a {
 #search_panel{
     margin-top: 150px;
 }
-.myownlink{
-    cursor:pointer;
+.social-content {
+    padding-bottom: 5px !important;
 }
-.myownlink:hover{
-    text-decoration:underline;
+.text-content {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }
-.mylink2{
- cursor:pointer;
+.author-content {
+    padding-top: 5px !important;
 }
