@@ -144,10 +144,10 @@
 
 
                         footer = '<div class="row valign-wrapper card-action">' +
-                                    '<div class="col s4">' +
+                                    '<div class="col s3">' +
                                         '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
                                     '</div>' +
-                                    '<div class="col s8">' +
+                                    '<div class="col s9">' +
                                         '<p>' + list[0].AuthorName + '</p>' +
                                         '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
                                     '</div>' +
@@ -163,10 +163,10 @@
                                 '<a href="' + list[0].PostLink + '" target="_blank">' + imageBlock +
                                 '<div class="card-content social-content">' +
                                     '<div class="row valign-wrapper">' +
-                                        '<div class="col s3">' +
+                                        '<div class="col s2">' +
                                             '<img src="/Content/' + list[0].Social + '.png" alt="" class="circle responsive-img">' +
                                         '</div>' +
-                                        '<div class="col s9">' +
+                                        '<div class="col s10">' +
                                             '<p>' + list[0].Social + '</p>' +
                                         '</div>' +
                                     '</div>' +
@@ -255,7 +255,7 @@
 
             $(window).scroll(function () {
 
-                if ($(window).height() + $(window).scrollTop() >= $(document).height() / 1.5) {
+                if ($(window).height() + $(window).scrollTop() >= $(document).height() - 5000) {
                     $("#load_more").addClass("active");
                     if (listresult.length <= 20) {
                         fill(listresult, listresult.length);
