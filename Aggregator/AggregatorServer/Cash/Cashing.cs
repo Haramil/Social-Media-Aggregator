@@ -38,20 +38,25 @@ namespace AggregatorServer.Cash
 
             foreach (var post in result.Posts)
             {
-                if (post.Image == "")
+                if (string.IsNullOrEmpty(post.Image))
                     continue;
 
                 Thread thread = new Thread(() =>
                 {
-                    WebRequest requestPic = WebRequest.Create(post.Image);
-                    WebResponse responsePic = requestPic.GetResponse();
-                    Image webImage = Image.FromStream(responsePic.GetResponseStream());
+                    try
+                    {
+                        WebRequest requestPic = WebRequest.Create(post.Image);
+                        WebResponse responsePic = requestPic.GetResponse();
+                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
 
-                    lock (lockObj) {
-                        post.Image = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
-                        webImage.Save(Path + post.Image);
-                        imageNum++;
+                        lock (lockObj)
+                        {
+                            post.Image = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
+                            webImage.Save(Path + post.Image);
+                            imageNum++;
+                        }
                     }
+                    catch { }
                 });
 
                 imageThreads.Add(thread);

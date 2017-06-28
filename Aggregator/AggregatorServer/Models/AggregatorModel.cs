@@ -55,13 +55,13 @@ namespace AggregatorServer.Models
             VKSearch vk = new VKSearch();
             TwitterSearch twitter = new TwitterSearch();
 
-            instThread = new Thread(() => searchResult.InstPagination = instPageInfo == "" 
+            instThread = new Thread(() => searchResult.InstPagination = string.IsNullOrEmpty(instPageInfo)
                 ? instPageInfo 
                 : instagram.Search(query, searchResult.Posts, instPageInfo, dict));
-            vkThread = new Thread(() => searchResult.VKPagination = vkPageInfo == ""
+            vkThread = new Thread(() => searchResult.VKPagination = string.IsNullOrEmpty(vkPageInfo)
                 ? vkPageInfo
                 : vk.Search(query, searchResult.Posts, vkPageInfo, dict));
-            twitterThread = new Thread(() => searchResult.TwitterPagination = twitterPageInfo == ""
+            twitterThread = new Thread(() => searchResult.TwitterPagination = string.IsNullOrEmpty(twitterPageInfo)
                 ? twitterPageInfo
                 : twitter.Search(query, searchResult.Posts, twitterPageInfo, dict));
 
