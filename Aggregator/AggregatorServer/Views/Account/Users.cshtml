@@ -1,0 +1,30 @@
+﻿@model List<ApplicationUser>
+@{
+    ViewBag.Title = "Пользователи";
+}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h5>Список пользователей</h5>
+            <table id="tablewithusers" class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Логин</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Login</td>
+                            <td>@Html.ActionLink("Удалить", "Delete", "Account", new { id = user.Id }, new { @class = "waves-effect waves-light btn" })</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <a href="/Account/Register" class="waves-effect waves-light btn col s12">Добавить пользователя</a>
+        <a href="/Home/Index" class="waves-effect waves-light btn col s12">На главную</a>
+    </div>
+</div>

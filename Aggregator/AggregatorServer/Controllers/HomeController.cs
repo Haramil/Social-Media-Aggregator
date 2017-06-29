@@ -9,9 +9,9 @@ namespace AggregatorServer.Controllers
     public class HomeController : Controller
     {
         [HttpGet]
-        public ActionResult Index(string query)
+        public ActionResult Index(string id)
         {
-            ViewBag.Query = query;
+            ViewBag.Query = id;
             return View();
         }
 

@@ -104,5 +104,17 @@ namespace AggregatorServer.Models
 
             }
         }
+
+        public List<ApplicationUser> GetAllUsers()
+        {
+            using (SqlConnection cn = new SqlConnection())
+            {
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    var user = db.Roles.FirstOrDefault(r => r.Name == "user");
+                    return db.Users.Where(u => u.Roles.Any(r => r.RoleId == user.Id)).ToList();
+                }
+            }
+        }
     }
 }

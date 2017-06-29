@@ -22,12 +22,31 @@ namespace AggregatorServerv.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult Users(string id)
+        {
+            DBWorker db = new DBWorker();
+            return View(db.GetAllUsers());
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            await UserManager.DeleteAsync(user);
+            return RedirectToAction("Users", "Account");
+        }
+
+        [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
@@ -40,7 +59,10 @@ namespace AggregatorServerv.Controllers
                 IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Login", "Account");
+                    // если создание прошло успешно, то добавляем роль пользователя
+                    await UserManager.AddToRoleAsync(user.Id, "user");
+
+                    return RedirectToAction("Users", "Account");
                 }
                 else
                 {
@@ -112,7 +134,7 @@ namespace AggregatorServerv.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult AddHashTag()
+        public ActionResult Tags()
         {
             return View();
         }

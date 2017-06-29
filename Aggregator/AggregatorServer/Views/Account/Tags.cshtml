@@ -1,56 +1,60 @@
 ﻿@using Microsoft.AspNet.Identity
 @{
-    ViewBag.Title = "Регистрация тега";
+    ViewBag.Title = "Теги";
 }
 <div class="container">
-    <div class="row" id="search_panel">
-        <div class="input-field col s12 m10 l8 offset-m1 offset-l2">
-            <input id="search_input" type="text" class="validate">
-            <label class="active" for="search_input">Введите тег</label>
-            <div class="progress">
-                <div id="progress_bar"></div>
-            </div>
-            <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тэг</p>
-            <p class="green-text center-align hide" id="successaddtag">Тег успешно зарегистрирован</p>
-            <p class="green-text center-align hide" id="successdeletetag">Тег успешно удалён</p>
-            <p class="materialize-red-text center-align hide" id="errorwithbd">Ошибка, что-то не так на сервере</p>
-            <p class="materialize-red-text center-align hide" id="errortagexists">Ошибка, этот тег уже есть в базе данных</p>
-            <br />
+    <div class="row">
+        <div class="col s12">
+            <h5>Добавление тега</h5>
             <div class="input-field">
-                <select id="countofpages">
-                    <option value="1" disabled selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                <label>Число страниц</label>
+                <input id="search_input" type="text" class="validate">
+                <label class="active" for="search_input">Введите тег</label>
+                <div class="progress">
+                    <div id="progress_bar"></div>
+                </div>
+                <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тэг</p>
+                <p class="green-text center-align hide" id="successaddtag">Тег успешно зарегистрирован</p>
+                <p class="green-text center-align hide" id="successdeletetag">Тег успешно удалён</p>
+                <p class="materialize-red-text center-align hide" id="errorwithbd">Ошибка, что-то не так на сервере</p>
+                <p class="materialize-red-text center-align hide" id="errortagexists">Ошибка, этот тег уже есть в базе данных</p>
+                <br />
+                <div class="input-field">
+                    <select id="countofpages">
+                        <option value="1" disabled selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                    <label>Число страниц</label>
+                </div>
+                <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
+                <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
             </div>
-            <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
-            <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
-            <div class="col s12">
-                <h5>Зарегистрированные теги</h5>
-                <table id="tablewithtags">
-                    <thead>
-                        <tr>
-                            <th>Тег</th>
-                            <th>Число страниц</th>
-                            <th>Дата добавления</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+        </div>
+        <div class="col s12">
+            <h5>Зарегистрированные теги</h5>
+            <table id="tablewithtags" class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Тег</th>
+                        <th>Число страниц</th>
+                        <th>Дата добавления</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-<
 <div id="modal1" class="modal">
     <div class="modal-content">
         <h5>Удаление тега</h5>
@@ -60,23 +64,6 @@
     <div class="modal-footer">
         <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" id="okdelete">Ок</a>
         <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Отмена</a>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col s2 m2 l2">
-            <div class="preloader-wrapper big" id="load_more">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div><div class="gap-patch">
-                        <div class="circle"></div>
-                    </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -103,7 +90,6 @@
             $(".modal-trigger").leanModal();
 
             $("#registertagbutton").removeClass("disabled");
-            $('#search_input').removeAttr("disabled");
         });
 
         $('#search_input').keyup(function (e) {
@@ -129,6 +115,7 @@
 
             var query = $("#search_input").val().toString();
             var countofpages = $("#countofpages option:selected").val()
+
             $("#registertagbutton").addClass("disabled");
 
             $("#successaddtag").addClass("hide");
