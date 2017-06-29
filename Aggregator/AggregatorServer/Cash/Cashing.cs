@@ -17,6 +17,25 @@ namespace AggregatorServer.Cash
     {
         public static string Path = HostingEnvironment.ApplicationPhysicalPath;
 
+        private static string DownloadImage(string link, int num, string query)
+        {
+            if (!string.IsNullOrEmpty(link))
+            {
+                try
+                {
+                    WebRequest requestPic = WebRequest.Create(link);
+                    WebResponse responsePic = requestPic.GetResponse();
+                    Image webImage = Image.FromStream(responsePic.GetResponseStream());
+
+                    string path = @"\Cash\" + query + @"\" + num + ".jpg";
+                    webImage.Save(Path + path);
+                    return path;
+                }
+                catch { }
+            }
+            return link;
+        }
+
         public static List<Pagination> Cash(string cashquery, int countofpages)
         {
             if (!Directory.Exists((Path + @"Cash\" + cashquery)))
@@ -52,50 +71,22 @@ namespace AggregatorServer.Cash
             List<Thread> imageThreads = new List<Thread>();
             foreach (var post in result.Posts)
             {
-                if (string.IsNullOrEmpty(post.Image))
-                    continue;
-
                 Thread imageThread = new Thread(() =>
                 {
-                    try
-                    {
-                        WebRequest requestPic = WebRequest.Create(post.Image);
-                        WebResponse responsePic = requestPic.GetResponse();
-                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
-
-                        lock (lockObj)
-                        {
-                            post.Image = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
-                            webImage.Save(Path + post.Image);
-                            imageNum++;
-                        }
-                    }
-                    catch { }
+                    post.Image = DownloadImage(post.Image, imageNum, cashquery);
                 });
+                imageNum++;
 
                 Thread avatarThread = new Thread(() =>
                 {
-                    try
-                    {
-                        WebRequest requestPic = WebRequest.Create(post.AuthorAvatar);
-                        WebResponse responsePic = requestPic.GetResponse();
-                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
-
-                        lock (lockObj)
-                        {
-                            post.AuthorAvatar = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
-                            webImage.Save(Path + post.AuthorAvatar);
-                            imageNum++;
-                        }
-                    }
-                    catch { }
+                    post.AuthorAvatar = DownloadImage(post.AuthorAvatar, imageNum, cashquery);
                 });
+                imageNum++;
 
                 imageThreads.Add(imageThread);
                 imageThreads.Add(avatarThread);
                 imageThread.Start();
                 avatarThread.Start();
-
             }
 
             foreach (Thread thread in imageThreads)
