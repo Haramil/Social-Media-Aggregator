@@ -17,7 +17,7 @@ namespace AggregatorServer.Cash
     {
         public static string Path = HostingEnvironment.ApplicationPhysicalPath;
 
-        public static SearchResult Cash(string cashquery)
+        public static List<Pagination> Cash(string cashquery, int countofpages)
         {
             if (!Directory.Exists((Path + @"Cash\" + cashquery)))
                 Directory.CreateDirectory(Path + @"Cash\" + cashquery);
@@ -32,16 +32,30 @@ namespace AggregatorServer.Cash
             object lockObj = new object();
 
             AggregatorModel model = new AggregatorModel();
-            SearchResult result = model.Search(cashquery);
+            List<GeneralPost> allposts = new List<GeneralPost>();
+            SearchResult result = new SearchResult();
+            result = model.Search(cashquery);
+            allposts.AddRange(result.Posts);
+            for (int i = 0; i < countofpages - 1; i++)
+            {
+                result = model.More(cashquery, result.VKPagination, result.InstPagination, result.TwitterPagination);
+                if (result.Posts.Count != 0)
+                    allposts.AddRange(result.Posts);
+                else
+                {
+                    countofpages = i + 2;
+                    break;
+                }
 
+            }
+            result.Posts = allposts;
             List<Thread> imageThreads = new List<Thread>();
-
             foreach (var post in result.Posts)
             {
                 if (string.IsNullOrEmpty(post.Image))
                     continue;
 
-                Thread thread = new Thread(() =>
+                Thread imageThread = new Thread(() =>
                 {
                     try
                     {
@@ -59,9 +73,29 @@ namespace AggregatorServer.Cash
                     catch { }
                 });
 
-                imageThreads.Add(thread);
-                thread.Start();
-                
+                Thread avatarThread = new Thread(() =>
+                {
+                    try
+                    {
+                        WebRequest requestPic = WebRequest.Create(post.AuthorAvatar);
+                        WebResponse responsePic = requestPic.GetResponse();
+                        Image webImage = Image.FromStream(responsePic.GetResponseStream());
+
+                        lock (lockObj)
+                        {
+                            post.AuthorAvatar = @"\Cash\" + cashquery + @"\" + imageNum + ".jpg";
+                            webImage.Save(Path + post.AuthorAvatar);
+                            imageNum++;
+                        }
+                    }
+                    catch { }
+                });
+
+                imageThreads.Add(imageThread);
+                imageThreads.Add(avatarThread);
+                imageThread.Start();
+                avatarThread.Start();
+
             }
 
             foreach (Thread thread in imageThreads)
@@ -76,13 +110,33 @@ namespace AggregatorServer.Cash
             dbworker.AddAllPosts(result.Posts, cashquery);
             dbworker.AddPagination(new Pagination()
             {
+                DateOfAdd = DateTime.Now,
+                CountOfPages = countofpages,
                 VKPagination = result.VKPagination,
                 InstagrammPagination = result.InstPagination,
                 TwitterPagination = result.TwitterPagination,
                 HashTag = cashquery
             });
 
-            return result;
+            return dbworker.GetAllPagination();
+        }
+
+        public static List<Pagination> DeleteHashTag(string query)
+        {
+            if (Directory.Exists((Path + @"Cash\" + query)))
+            {
+                List<string> files = Directory.EnumerateFiles(Path + @"Cash\" + query).ToList();
+                files.ForEach(file =>
+                {
+                    File.Delete(file);
+                });
+                Directory.Delete((Path + @"Cash\" + query));
+            }
+            DBWorker dbworker = new DBWorker();
+            dbworker.DeleteAllPostsByHashTag(query);
+            dbworker.DeletePagination(query);
+            return dbworker.GetAllPagination();
+
         }
     }
 }

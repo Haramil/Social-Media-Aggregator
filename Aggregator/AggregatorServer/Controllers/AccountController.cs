@@ -111,17 +111,49 @@ namespace AggregatorServerv.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public ActionResult AddHashTag()
         {
-
             return View();
         }
 
         [Authorize]
         [HttpPost]
-        public string AddHashTag2(string query)
+        public string AddHashTag(string query, int countofpages)
         {
-            return JsonConvert.SerializeObject(Cashing.Cash(query));
+            try
+            {
+                DBWorker dbworker = new DBWorker();
+                Pagination p = dbworker.GetPaginations(query);
+                if (p != null) { return "tagexists"; }
+                return JsonConvert.SerializeObject(Cashing.Cash(query, countofpages));
+            }
+            catch
+            {
+                return "badbd";
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string DeleteHashTag(string query)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(Cashing.DeleteHashTag(query));
+            }
+            catch
+            {
+                return "badbd";
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string GetAllTags()
+        {
+            DBWorker dbworker = new DBWorker();
+            return JsonConvert.SerializeObject(dbworker.GetAllPagination());
         }
     }
 }

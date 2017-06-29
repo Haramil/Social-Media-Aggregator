@@ -4,77 +4,62 @@
 }
 <div class="container">
     <div class="row" id="search_panel">
-
-        <div class="input-field col s8 m6 offset-s2 offset-m3">
-            <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
+        <div class="input-field col s12 m10 l8 offset-m1 offset-l2">
+            <input id="search_input" type="text" class="validate">
             <label class="active" for="search_input">Введите тег</label>
             <div class="progress">
                 <div id="progress_bar"></div>
             </div>
-            <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" onclick="regtag()">Зарегистрировать тег</a>&nbsp&nbsp
-            <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="/Home/Index">На главную</a>
-        </div>
-    </div>
-</div>
-<div id="modal1" class="modal" style="overflow:hidden;">
-    <div class="modal-content">
-        <h4 style="text-align:center;" id="headeruser">Вход</h4>
-        <div class="row">
-            <form class="col s19 m12 l10" id="myform">
-                <div class="row">
-                    <div class="input-field col  offset-s2 offset-m3 offset-l4 s10 m6 l6">
-                        <i class="material-icons prefix">account_circle</i>
-                        <input id="icon_prefix" type="text" class="validate">
-                        <label for="icon_prefix">Логин</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_login">Введите логин</p>
-                    <br />
-                </div>
-                <div class="row">
-                    <div class="input-field col   offset-s2 offset-m3 offset-l4 s10  m6 l6">
-                        <i class="material-icons prefix">vpn_key</i>
-                        <input id="icon_telephone" type="password" class="validate" required="" aria-required="true">
-                        <label for="icon_telephone">Пароль</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <p style="text-align:center;color:red;" class="offset-s14 offset-m14 offset-l14 hide" id="valid_password">Введите пароль</p>
-                    <br />
-                </div>
-                <div class="row">
-                    <p style="color:green;text-align:center;" class="hide" id="bdsuccess">Вы успешно авторизованы</p>
-                    <p style="color:red;" class="hide" id="bderror">Неверный логин или пароль</p>
-                </div>
-
-            </form>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn waves-light" style="margin-right:2%">Закрыть</a>
-        <a class="waves-effect waves-green btn waves-light" id="autorize" style="margin-right:2%;">Вход</a>
-        <div class="preloader-wrapper small" id="connectdatabase">
-            <div class="spinner-layer spinner-blue-only">
-                <div class="circle-clipper left">
-                    <div class="circle"></div>
-                </div><div class="gap-patch">
-                    <div class="circle"></div>
-                </div><div class="circle-clipper right">
-                    <div class="circle"></div>
-                </div>
+            <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тэг</p>
+            <p class="green-text center-align hide" id="successaddtag">Тег успешно зарегистрирован</p>
+            <p class="green-text center-align hide" id="successdeletetag">Тег успешно удалён</p>
+            <p class="materialize-red-text center-align hide" id="errorwithbd">Ошибка, что-то не так на сервере</p>
+            <p class="materialize-red-text center-align hide" id="errortagexists">Ошибка, этот тег уже есть в базе данных</p>
+            <br />
+            <div class="input-field">
+                <select id="countofpages">
+                    <option value="1" disabled selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                <label>Число страниц</label>
+            </div>
+            <a class="waves-effect waves-light btn col s12" onclick="regtag()" id="registertagbutton">Зарегистрировать тег</a>
+            <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
+            <div class="col s12">
+                <h5>Зарегистрированные теги</h5>
+                <table id="tablewithtags">
+                    <thead>
+                        <tr>
+                            <th>Тег</th>
+                            <th>Число страниц</th>
+                            <th>Дата добавления</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="col s12 m6 l4" id="col1">
-        </div>
-        <div class="col s12 m6 l4" id="col2">
-        </div>
-        <div class="col s12 m12 l4" id="col3">
-        </div>
+<
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h5>Удаление тега</h5>
+        <p>Вы уверены, что хотите удалить этот тег из базы данных?</p>
+        <input type="text" class="hide" id="hashfordelete" />
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" id="okdelete">Ок</a>
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Отмена</a>
     </div>
 </div>
 <div class="container">
@@ -97,6 +82,27 @@
 
 @section scripts{
     <script type="text/javascript">
+        var probels = true;
+        $("#registertagbutton").addClass("disabled");
+        $('#search_input').attr("disabled", "");
+        $('select').material_select();
+        $.ajax({
+            type: "POST",
+            url: '/Account/GetAllTags',
+            data: {},
+        }).done(function (data) {
+            $("#tablewithtags tbody").empty();
+            result = JSON.parse(data);
+            for (var i = 0; i < result.length; i++) {
+                var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+            }
+
+        }).always(function () {
+            $(".modal-trigger").leanModal();
+            $("#registertagbutton").removeClass("disabled");
+            $('#search_input').removeAttr("disabled");
+        });
 
         $('#search_input').keyup(function (e) {
             if (e.keyCode == 13) {
@@ -107,134 +113,106 @@
         var block = false;
         var result;
         var listresult = [];
-        function fill(list, len) {
-            var cols = [$("#col1")];
-            if ($("#col2").offset().left > $("#col1").offset().left)
-                cols.push($("#col2"));
-            if ($("#col3").offset().left > $("#col1").offset().left)
-                cols.push($("#col3"));
+        $(".modal-trigger").leanModal();
 
-            var selectedCol = cols[0];
-
-            for (var i = 0; i < len; i++) {
-
-                var imageBlock = "";
-                if (list[0].Image != "")
-                    imageBlock = '<div class="card-image">' +
-                                    '<img src="' + list[0].Image + '">' +
-                                '</div>';
-                var footer = "";
-                hours = "";
-                if (new Date(list[0].Date).toLocaleTimeString().split(':')[0].length == 1) {
-                    hours = "0" + new Date(list[0].Date).toLocaleTimeString().split(':')[0];
-                } else {
-                    hours = new Date(list[0].Date).toLocaleTimeString().split(':')[0];
-                }
-                if (list[0].AuthorName != "") {
-
-
-                    footer = '<div class="row valign-wrapper card-action">' +
-                                '<div class="col s3">' +
-                                    '<img src="' + list[0].AuthorAvatar + '" alt="" class="circle responsive-img">' +
-                                '</div>' +
-                                '<div class="col s9">' +
-                                    '<p>' + list[0].AuthorName + '</p>' +
-                                    '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>' +
-                                '</div>' +
-                            '</div>';
-
-
-                }
-                else {
-                    footer = '<p>' + new Date(list[0].Date).toLocaleDateString() + '</p><p> ' + hours + ':' + new Date(list[0].Date).toLocaleTimeString().split(':')[1] + '</p>';
-                }
-                selectedCol.append(
-                        '<div class="card">' +
-                                '<a href="' + list[0].PostLink + '" target="_blank">' + imageBlock +
-                                '<div class="card-content social-content">' +
-                                    '<div class="row valign-wrapper">' +
-                                        '<div class="col s2">' +
-                                            '<img src="/Content/' + list[0].Social + '.png" alt="" class="circle responsive-img">' +
-                                        '</div>' +
-                                        '<div class="col s10">' +
-                                            '<p>' + list[0].Social + '</p>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="card-content text-content">' +
-                                    '<p>' + list[0].Text + '<p>' +
-                                '</div>' + '</a>' +
-                                '<a href="' + list[0].AuthorLink + '" target="_blank">' +
-                                    '<div class="card-content author-content">' +
-                                        footer +
-                                    '</div>' +
-                                '</a>' +
-                            '</div>');
-
-                var minHeight = selectedCol.height()
-
-                cols.forEach(function (item, i, arr) {
-                    if (item.height() < minHeight) {
-                        selectedCol = item;
-                        minHeight = item.height();
-                    }
-                });
-                listresult.splice(0, 1);
-            }
-        };
-        function copylists(list) {
-            var temp = [];
-            for (var i = 0; i < list.length; i++) {
-                temp[i] = {};
-                temp[i].Image = list[i].Image;
-                temp[i].AuthorName = list[i].AuthorName;
-                temp[i].AuthorAvatar = list[i].AuthorAvatar;
-                temp[i].Social = list[i].Social;
-                temp[i].Text = list[i].Text;
-                temp[i].Date = list[i].Date;
-                temp[i].PostLink = list[i].PostLink;
-                temp[i].AuthorLink = list[i].AuthorLink;
-            }
-            listresult = listresult.concat(temp);
-            console.log(listresult);
-        }
         function regtag() {
-
-            if ($("#search_input").val() != "") {
-                $("#search_panel").animate({
-                    "margin-top": 0
-                }, 500, function () {
-
-                });
-                $("#progress_bar").addClass("indeterminate");
-                $.ajax({
-                    type: "POST",
-                    url: '/Account/AddHashTag2',
-                    data: { query: $("#search_input").val().toString() },
-                }).done(function (data) {
-
-                    $("#col1").empty();
-                    $("#col2").empty();
-                    $("#col3").empty();
-
-                    result = JSON.parse(data);
-
-                    if (result.Posts.length > 0) {
-                        block = false;
-                        listresult = [];
-                        copylists(result.Posts);
-                        console.log(listresult);
-                        if (listresult.length >= 20)
-                            fill(listresult, 20);
-                        else {
-                            fill(listresult, listresult.length);
-                            block = true;
-                        }
-                    }
-                }).always(function () {
-                    $("#progress_bar").removeClass();
-                });
+            $("#registertagbutton").addClass("disabled");
+            $('#search_input').attr("disabled", "");
+            $("#successaddtag").addClass("hide");
+            $("#successdeletetag").addClass("hide");
+            $("#errorwithbd").addClass("hide");
+            $("#errortagexists").addClass("hide");
+            $("#errorqueryempty").addClass("hide");
+            probels = true;
+            onlyprobels($("#search_input").val().toString());
+            if (probels) {
+                $("#errorqueryempty").removeClass("hide");
+                $("#registertagbutton").removeClass("disabled");
+                $('#search_input').removeAttr("disabled");
+                return;
             }
+
+            $("#progress_bar").addClass("indeterminate");
+            $.ajax({
+                type: "POST",
+                url: '/Account/AddHashTag',
+                data: { query: $("#search_input").val().toString(), countofpages: $("#countofpages option:selected").val() },
+            }).done(function (data) {
+                if (data == "tagexists") {
+                    $("#errortagexists").removeClass("hide");
+                    $(".modal-trigger").leanModal();
+                    $("#progress_bar").removeClass();
+                    $("#registertagbutton").removeClass("disabled");
+                    $('#search_input').removeAttr("disabled");
+                    return;
+                }
+                if (data == "badbd") {
+                    $("#errorwithbd").removeClass("hide");
+                    $(".modal-trigger").leanModal();
+                    $("#progress_bar").removeClass();
+                    $("#registertagbutton").removeClass("disabled");
+                    $('#search_input').removeAttr("disabled");
+                    return;
+                }
+                $("#tablewithtags tbody").empty();
+                result = JSON.parse(data);
+                for (var i = 0; i < result.length; i++) {
+                    var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+                }
+                $("#successaddtag").removeClass("hide");
+            }).always(function () {
+                $(".modal-trigger").leanModal();
+                $("#progress_bar").removeClass();
+                $("#registertagbutton").removeClass("disabled");
+                $('#search_input').removeAttr("disabled");
+            });
+
+
+        }
+
+        $("#okdelete").click(function () {
+            deletetag();
+        });
+
+        function deletetag() {
+            $("#successaddtag").addClass("hide");
+            $("#successdeletetag").addClass("hide");
+            $("#errorwithbd").addClass("hide");
+            $("#errortagexists").addClass("hide");
+            $("#errorqueryempty").addClass("hide");
+            $("#progress_bar").addClass("indeterminate");
+            $.ajax({
+                type: "POST",
+                url: '/Account/DeleteHashTag',
+                data: { query: $("#hashfordelete").val() },
+            }).done(function (data) {
+                if (data == "badbd") {
+                    $("#errorwithbd").removeClass("hide");
+                    $(".modal-trigger").leanModal();
+                    $("#progress_bar").removeClass();
+                    return;
+                }
+                $("#tablewithtags tbody").empty();
+                result = JSON.parse(data);
+                for (var i = 0; i < result.length; i++) {
+                    var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1"id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+                }
+                $("#successdeletetag").removeClass("hide");
+
+            }).always(function () {
+                $(".modal-trigger").leanModal();
+                $("#progress_bar").removeClass();
+            });
+        }
+        function sethash(hash) {
+
+            $("#hashfordelete").val(hash);
+        }
+        function onlyprobels(data) {
+            for (var i = 0; i < data.length; i++)
+                if (data[i] != ' ') probels = false;
         }
 
     </script>

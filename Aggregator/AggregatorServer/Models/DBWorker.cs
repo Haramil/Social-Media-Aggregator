@@ -20,13 +20,20 @@ namespace AggregatorServer.Models
         }
         public Pagination GetPaginations(string hashtag)
         {
-            using (SqlConnection cn = new SqlConnection())
+            try
             {
-                using (ApplicationContext db = new ApplicationContext())
+                using (SqlConnection cn = new SqlConnection())
                 {
-                    return db.Paginations.Where(x => x.HashTag == hashtag).First();
-                }
+                    using (ApplicationContext db = new ApplicationContext())
+                    {
+                        return db.Paginations.Where(x => x.HashTag == hashtag).First();
+                    }
 
+                }
+            }
+            catch
+            {
+                return null;
             }
         }
         public void AddAllPosts(List<GeneralPost> posts, string cashquery)
@@ -85,7 +92,17 @@ namespace AggregatorServer.Models
 
             }
         }
-       
 
+        public List<Pagination> GetAllPagination()
+        {
+            using (SqlConnection cn = new SqlConnection())
+            {
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    return db.Paginations.ToList();
+                }
+
+            }
+        }
     }
 }
