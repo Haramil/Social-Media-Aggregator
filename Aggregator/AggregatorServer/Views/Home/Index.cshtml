@@ -266,6 +266,10 @@
             $(window).scroll(function () {
 
                 if ($(window).height() + $(window).scrollTop() >= $(document).height() - 5000) {
+
+                    if ($("#load_more").hasClass("active"))
+                        return;
+
                     $("#load_more").addClass("active");
                     if (listresult.length <= 20) {
                         fill(listresult, listresult.length);
