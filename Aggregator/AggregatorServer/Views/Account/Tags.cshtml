@@ -7,8 +7,8 @@
         <div class="col s12">
             <h5>Добавление тега</h5>
             <div class="input-field">
-                <input id="search_input" type="text" class="validate">
-                <label class="active" for="search_input">Введите тег</label>
+                <input id="tag_input" type="text" class="validate">
+                <label class="active" for="tag_input">Введите тег</label>
                 <div class="progress">
                     <div id="progress_bar"></div>
                 </div>
@@ -33,7 +33,7 @@
                     </select>
                     <label>Число страниц</label>
                 </div>
-                <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
+                <a class="waves-effect waves-light btn col s12" id="registertag_button">Зарегистрировать тег</a>
                 <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
             </div>
         </div>
@@ -71,7 +71,7 @@
     <script type="text/javascript">
         var probels = true;
 
-        $("#registertagbutton").addClass("disabled");
+        $("#registertag_button").addClass("disabled");
 
         $('select').material_select();
         $.ajax({
@@ -89,19 +89,19 @@
         }).always(function () {
             $(".modal-trigger").leanModal();
 
-            $("#registertagbutton").removeClass("disabled");
+            $("#registertag_button").removeClass("disabled");
         });
 
-        $('#search_input').keyup(function (e) {
+        $('#tag_input').keyup(function (e) {
             if (e.keyCode == 13) {
-                if (!$("#registertagbutton").hasClass("disabled")) {
+                if (!$("#registertag_button").hasClass("disabled")) {
                     regtag();
                 }
             }
         });
 
-        $("#registertagbutton").click(function () {
-            if (!$("#registertagbutton").hasClass("disabled")) {
+        $("#registertag_button").click(function () {
+            if (!$("#registertag_button").hasClass("disabled")) {
                 regtag();
             }
         });
@@ -113,10 +113,10 @@
 
         function regtag() {
 
-            var query = $("#search_input").val().toString();
+            var query = $("#tag_input").val().toString();
             var countofpages = $("#countofpages option:selected").val()
 
-            $("#registertagbutton").addClass("disabled");
+            $("#registertag_button").addClass("disabled");
 
             $("#successaddtag").addClass("hide");
             $("#successdeletetag").addClass("hide");
@@ -124,11 +124,11 @@
             $("#errortagexists").addClass("hide");
             $("#errorqueryempty").addClass("hide");
             probels = true;
-            onlyprobels($("#search_input").val().toString());
+            onlyprobels($("#tag_input").val().toString());
             if (probels) {
                 $("#errorqueryempty").removeClass("hide");
 
-                $("#registertagbutton").removeClass("disabled");
+                $("#registertag_button").removeClass("disabled");
                 return;
             }
 
@@ -157,7 +157,7 @@
                 $(".modal-trigger").leanModal();
                 $("#progress_bar").removeClass();
 
-                $("#registertagbutton").removeClass("disabled");
+                $("#registertag_button").removeClass("disabled");
             });
 
 
