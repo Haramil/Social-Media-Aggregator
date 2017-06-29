@@ -1,1 +1,1 @@
-﻿This folder is for DB file
+﻿
