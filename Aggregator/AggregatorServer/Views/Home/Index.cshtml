@@ -9,18 +9,18 @@
                 <p class="green-text">Здравствуйте, @User.Identity.Name</p>
                 if (User.IsInRole("admin"))
                 {
-                    <a class="waves-effect waves-light btn col s12" href="/Account/Users">Пользователи</a>
+                    <a id="users_button" class="waves-effect waves-light btn col s12" href="/Account/Users">Пользователи</a>
                 }
-                <a class="waves-effect waves-light btn col s12" href="/Account/Tags">Теги</a>
+                <a id="tags_button" class="waves-effect waves-light btn col s12" href="/Account/Tags">Теги</a>
                 using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                 {
                     @Html.AntiForgeryToken()
-                    <a class="waves-effect waves-light btn col s12" href="javascript:document.getElementById('logoutForm').submit()">Выход</a>
+                    <a id="logout_button" class="waves-effect waves-light btn col s12" href="javascript:document.getElementById('logoutForm').submit()">Выход</a>
                 }
             }
             else
             {
-                <a class="waves-effect waves-light btn col s12" href="/Account/Login">Вход</a>
+                <a id="login_button" class="waves-effect waves-light btn col s12" href="/Account/Login">Вход</a>
             }
             <div class="input-field col s12">
                 <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
@@ -266,6 +266,10 @@
             $(window).scroll(function () {
 
                 if ($(window).height() + $(window).scrollTop() >= $(document).height() - 5000) {
+
+                    if ($("#load_more").hasClass("active"))
+                        return;
+
                     $("#load_more").addClass("active");
                     if (listresult.length <= 20) {
                         fill(listresult, listresult.length);

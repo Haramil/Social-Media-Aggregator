@@ -7,8 +7,8 @@
         <div class="col s12">
             <h5>Добавление тега</h5>
             <div class="input-field">
-                <input id="search_input" type="text" class="validate">
-                <label class="active" for="search_input">Введите тег</label>
+                <input id="tag_input" type="text" class="validate">
+                <label class="active" for="tag_input">Введите тег</label>
                 <div class="progress">
                     <div id="progress_bar"></div>
                 </div>
@@ -20,7 +20,7 @@
                 <br />
                 <div class="input-field">
                     <select id="countofpages">
-                        <option value="1" disabled selected>1</option>
+                        <option value="1" selected>1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -33,7 +33,7 @@
                     </select>
                     <label>Число страниц</label>
                 </div>
-                <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
+                <a class="waves-effect waves-light btn col s12" id="registertag_button">Зарегистрировать тег</a>
                 <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
             </div>
         </div>
@@ -71,7 +71,7 @@
     <script type="text/javascript">
         var probels = true;
 
-        $("#registertagbutton").addClass("disabled");
+        $("#registertag_button").addClass("disabled");
 
         $('select').material_select();
         $.ajax({
@@ -89,19 +89,19 @@
         }).always(function () {
             $(".modal-trigger").leanModal();
 
-            $("#registertagbutton").removeClass("disabled");
+            $("#registertag_button").removeClass("disabled");
         });
 
-        $('#search_input').keyup(function (e) {
+        $('#tag_input').keyup(function (e) {
             if (e.keyCode == 13) {
-                if (!$("#registertagbutton").hasClass("disabled")) {
+                if (!$("#registertag_button").hasClass("disabled")) {
                     regtag();
                 }
             }
         });
 
-        $("#registertagbutton").click(function () {
-            if (!$("#registertagbutton").hasClass("disabled")) {
+        $("#registertag_button").click(function () {
+            if (!$("#registertag_button").hasClass("disabled")) {
                 regtag();
             }
         });
@@ -113,10 +113,10 @@
 
         function regtag() {
 
-            var query = $("#search_input").val().toString();
+            var query = $("#tag_input").val().toString();
             var countofpages = $("#countofpages option:selected").val()
 
-            $("#registertagbutton").addClass("disabled");
+            $("#registertag_button").addClass("disabled");
 
             $("#successaddtag").addClass("hide");
             $("#successdeletetag").addClass("hide");
@@ -124,11 +124,11 @@
             $("#errortagexists").addClass("hide");
             $("#errorqueryempty").addClass("hide");
             probels = true;
-            onlyprobels($("#search_input").val().toString());
+            onlyprobels($("#tag_input").val().toString());
             if (probels) {
                 $("#errorqueryempty").removeClass("hide");
 
-                $("#registertagbutton").removeClass("disabled");
+                $("#registertag_button").removeClass("disabled");
                 return;
             }
 
@@ -149,7 +149,7 @@
                 $("#tablewithtags tbody").empty();
                 result = JSON.parse(data);
                 for (var i = 0; i < result.length; i++) {
-                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
                     $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
                 }
                 $("#successaddtag").removeClass("hide");
@@ -157,7 +157,7 @@
                 $(".modal-trigger").leanModal();
                 $("#progress_bar").removeClass();
 
-                $("#registertagbutton").removeClass("disabled");
+                $("#registertag_button").removeClass("disabled");
             });
 
 
@@ -188,7 +188,7 @@
                 $("#tablewithtags tbody").empty();
                 result = JSON.parse(data);
                 for (var i = 0; i < result.length; i++) {
-                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1"id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1"id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
                     $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
                 }
                 $("#successdeletetag").removeClass("hide");
