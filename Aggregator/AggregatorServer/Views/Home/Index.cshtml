@@ -220,10 +220,10 @@
                     $("#col3").empty();
 
                     result = JSON.parse(data);
-
+                    listresult = [];
+                        
                     if (result.Posts.length > 0) {
                         block = false;
-                        listresult = [];
                         copylists(result.Posts);
                         if (listresult.length >= 20)
                             fill(listresult, 20);
@@ -265,7 +265,7 @@
 
             $(window).scroll(function () {
 
-                if ($(window).height() + $(window).scrollTop() >= $(document).height() - 5000) {
+                if (($(window).height() + $(window).scrollTop() >= $(document).height() - 5000) && (listresult.length > 0)) {
 
                     if ($("#load_more").hasClass("active"))
                         return;
