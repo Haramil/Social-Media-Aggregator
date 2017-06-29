@@ -83,8 +83,9 @@
 @section scripts{
     <script type="text/javascript">
         var probels = true;
+        $("#registertagbutton").attr("disabled", true);
         $("#registertagbutton").addClass("disabled");
-        $('#search_input').attr("readonly", "true");
+        $('#search_input').attr("disabled", true);
         $('select').material_select();
         $.ajax({
             type: "POST",
@@ -100,8 +101,9 @@
 
         }).always(function () {
             $(".modal-trigger").leanModal();
+            $("#registertagbutton").removeAttr("disabled");
             $("#registertagbutton").removeClass("disabled");
-            $('#search_input').removeAttr("readonly");
+            $('#search_input').removeAttr("disabled");
         });
 
         $('#search_input').keyup(function (e) {
@@ -116,11 +118,9 @@
         $(".modal-trigger").leanModal();
 
         function regtag() {
-            if ($("#registertagbutton").hasClass("disabled"))
-                return;
-
+            $("#registertagbutton").attr("disabled", true);
             $("#registertagbutton").addClass("disabled");
-            $('#search_input').attr("readonly", "true");
+            $('#search_input').attr("disabled", true);
             $("#successaddtag").addClass("hide");
             $("#successdeletetag").addClass("hide");
             $("#errorwithbd").addClass("hide");
@@ -157,8 +157,9 @@
             }).always(function () {
                 $(".modal-trigger").leanModal();
                 $("#progress_bar").removeClass();
+                $("#registertagbutton").removeAttr("disabled");
                 $("#registertagbutton").removeClass("disabled");
-                $('#search_input').removeAttr("readonly");
+                $('#search_input').removeAttr("disabled");
             });
 
 

@@ -195,11 +195,9 @@
 
 
             function search() {
-                if ($("#search_button").hasClass("disabled"))
-                    return;
-
+                $("#search_button").attr("disabled", true);
                 $("#search_button").addClass("disabled");
-                $('#search_input').attr("readonly","true");
+                $('#search_input').attr("disabled", true);
                 $("#progress_bar").addClass("indeterminate");
 
                 blck = false;
@@ -236,8 +234,9 @@
                     }
 
                 }).always(function () {
+                    $("#search_button").removeAttr("disabled");
                     $("#search_button").removeClass("disabled");
-                    $('#search_input').removeAttr("readonly");
+                    $('#search_input').removeAttr("disabled");
                     $("#progress_bar").removeClass();
                 });
             }
