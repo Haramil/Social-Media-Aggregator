@@ -31,7 +31,7 @@
                 </select>
                 <label>Число страниц</label>
             </div>
-            <a class="waves-effect waves-light btn col s12" onclick="regtag()" id="registertagbutton">Зарегистрировать тег</a>
+            <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
             <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
             <div class="col s12">
                 <h5>Зарегистрированные теги</h5>
@@ -83,9 +83,9 @@
 @section scripts{
     <script type="text/javascript">
         var probels = true;
-        $("#registertagbutton").attr("disabled", true);
+
         $("#registertagbutton").addClass("disabled");
-        $('#search_input').attr("disabled", true);
+
         $('select').material_select();
         $.ajax({
             type: "POST",
@@ -101,13 +101,21 @@
 
         }).always(function () {
             $(".modal-trigger").leanModal();
-            $("#registertagbutton").removeAttr("disabled");
+
             $("#registertagbutton").removeClass("disabled");
             $('#search_input').removeAttr("disabled");
         });
 
         $('#search_input').keyup(function (e) {
             if (e.keyCode == 13) {
+                if (!$("#registertagbutton").hasClass("disabled")) {
+                    regtag();
+                }
+            }
+        });
+
+        $("#registertagbutton").click(function () {
+            if (!$("#registertagbutton").hasClass("disabled")) {
                 regtag();
             }
         });
@@ -118,9 +126,11 @@
         $(".modal-trigger").leanModal();
 
         function regtag() {
-            $("#registertagbutton").attr("disabled", true);
+
+            var query = $("#search_input").val().toString();
+            var countofpages = $("#countofpages option:selected").val()
             $("#registertagbutton").addClass("disabled");
-            $('#search_input').attr("disabled", true);
+
             $("#successaddtag").addClass("hide");
             $("#successdeletetag").addClass("hide");
             $("#errorwithbd").addClass("hide");
@@ -130,6 +140,8 @@
             onlyprobels($("#search_input").val().toString());
             if (probels) {
                 $("#errorqueryempty").removeClass("hide");
+
+                $("#registertagbutton").removeClass("disabled");
                 return;
             }
 
@@ -137,7 +149,7 @@
             $.ajax({
                 type: "POST",
                 url: '/Account/AddHashTag',
-                data: { query: $("#search_input").val().toString(), countofpages: $("#countofpages option:selected").val() },
+                data: { query: query, countofpages: countofpages },
             }).done(function (data) {
                 if (data == "tagexists") {
                     $("#errortagexists").removeClass("hide");
@@ -157,9 +169,8 @@
             }).always(function () {
                 $(".modal-trigger").leanModal();
                 $("#progress_bar").removeClass();
-                $("#registertagbutton").removeAttr("disabled");
+
                 $("#registertagbutton").removeClass("disabled");
-                $('#search_input').removeAttr("disabled");
             });
 
 

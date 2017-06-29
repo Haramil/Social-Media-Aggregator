@@ -112,10 +112,10 @@
 
 @section scripts{
     <script type="text/javascript">
-        var block = false;
-        var result;
-        var listresult = [];
         $(function () {
+            var block = false;
+            var result;
+            var listresult = [];
 
             function fill(list, len) {
                 var cols = [$("#col1")];
@@ -195,12 +195,12 @@
 
 
             function search() {
-                $("#search_button").attr("disabled", true);
+
+                var query = $("#search_input").val().toString();
                 $("#search_button").addClass("disabled");
-                $('#search_input').attr("disabled", true);
+
                 $("#progress_bar").addClass("indeterminate");
 
-                blck = false;
                 $("#search_panel").animate({
                     "margin-top": 0
                 }, 500, function () {
@@ -210,7 +210,7 @@
                 $.ajax({
                     type: "POST",
                     url: '/Home/Search',
-                    data: { query: $("#search_input").val().toString() },
+                    data: { query: query },
                 }).done(function (data) {
 
                     $("#col1").empty();
@@ -234,9 +234,8 @@
                     }
 
                 }).always(function () {
-                    $("#search_button").removeAttr("disabled");
+
                     $("#search_button").removeClass("disabled");
-                    $('#search_input').removeAttr("disabled");
                     $("#progress_bar").removeClass();
                 });
             }
@@ -246,12 +245,16 @@
 
             $('#search_input').keyup(function (e) {
                 if (e.keyCode == 13) {
-                    search();
+                    if (!$("#search_button").hasClass("disabled")) {
+                        search();
+                    }
                 }
             });
 
             $("#search_button").click(function () {
-                search();
+                if (!$("#search_button").hasClass("disabled")) {
+                    search();
+                }
             });
 
             $("login").click(function () {
@@ -277,7 +280,7 @@
                                     twPage: result.TwitterPagination
                                 },
                             }).done(function (data) {
-                                result = JSON.parse(data);;
+                                result = JSON.parse(data);
                                 if (result.Posts.length > 0)
                                     copylists(result.Posts);
                                 else block = true;
