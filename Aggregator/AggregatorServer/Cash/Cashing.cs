@@ -17,7 +17,10 @@ namespace AggregatorServer.Cash
     {
         public static string Path = HostingEnvironment.ApplicationPhysicalPath;
 
-        private static string DownloadImage(string link, int num, string query)
+        private static object lockObj = new object();
+        private static int imageNum;
+
+        private static string DownloadImage(string link, string query)
         {
             if (!string.IsNullOrEmpty(link))
             {
@@ -27,8 +30,13 @@ namespace AggregatorServer.Cash
                     WebResponse responsePic = requestPic.GetResponse();
                     Image webImage = Image.FromStream(responsePic.GetResponseStream());
 
-                    string path = @"\Cash\" + query + @"\" + num + ".jpg";
-                    webImage.Save(Path + path);
+                    string path;
+                    lock (lockObj)
+                    {
+                        path = @"\Cash\" + query + @"\" + imageNum + ".jpg";
+                        webImage.Save(Path + path);
+                        imageNum++;
+                    }
                     return path;
                 }
                 catch { }
@@ -46,9 +54,6 @@ namespace AggregatorServer.Cash
             {
                 File.Delete(file);
             });
-
-            int imageNum = 0;
-            object lockObj = new object();
 
             AggregatorModel model = new AggregatorModel();
             List<GeneralPost> allposts = new List<GeneralPost>();
@@ -69,24 +74,25 @@ namespace AggregatorServer.Cash
             }
             result.Posts = allposts;
             List<Thread> imageThreads = new List<Thread>();
+
+            imageNum = 0;
+
             foreach (var post in result.Posts)
             {
                 Thread imageThread = new Thread(() =>
                 {
-                    post.Image = DownloadImage(post.Image, imageNum, cashquery);
+                    post.Image = DownloadImage(post.Image, cashquery);
                 });
-                imageNum++;
 
                 Thread avatarThread = new Thread(() =>
                 {
-                    post.AuthorAvatar = DownloadImage(post.AuthorAvatar, imageNum, cashquery);
+                    post.AuthorAvatar = DownloadImage(post.AuthorAvatar, cashquery);
                 });
-                imageNum++;
-
-                imageThreads.Add(imageThread);
+                
                 imageThreads.Add(avatarThread);
-                imageThread.Start();
+                imageThreads.Add(imageThread);
                 avatarThread.Start();
+                imageThread.Start();
             }
 
             foreach (Thread thread in imageThreads)
