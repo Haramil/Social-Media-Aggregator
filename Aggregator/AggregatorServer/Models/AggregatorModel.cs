@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using TwitterSearcher;
 using VKSearcher;
+using System.Web;
 
 namespace AggregatorServer.Models
 {
@@ -19,7 +20,7 @@ namespace AggregatorServer.Models
         public SearchResult Search(string query)
         {
             SearchResult searchResult = new SearchResult();
-            searchResult.Query = query;
+            searchResult.Query = HttpUtility.UrlEncode(query);
 
             Cenzor cenzor = new Cenzor();
 
@@ -49,7 +50,7 @@ namespace AggregatorServer.Models
         public SearchResult More(string query, string vkPageInfo, string instPageInfo, string twitterPageInfo)
         {
             SearchResult searchResult = new SearchResult();
-            searchResult.Query = query;
+            searchResult.Query = HttpUtility.UrlEncode(query);
 
             InstagramSearch instagram = new InstagramSearch();
             VKSearch vk = new VKSearch();
