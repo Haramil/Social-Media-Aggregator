@@ -12,7 +12,7 @@
                 <div class="progress">
                     <div id="progress_bar"></div>
                 </div>
-                <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тэг</p>
+                <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тег</p>
                 <p class="green-text center-align hide" id="successaddtag">Тег успешно зарегистрирован</p>
                 <p class="green-text center-align hide" id="successdeletetag">Тег успешно удалён</p>
                 <p class="materialize-red-text center-align hide" id="errorwithbd">Ошибка, что-то не так на сервере</p>
@@ -82,7 +82,7 @@
             $("#tablewithtags tbody").empty();
             result = JSON.parse(data);
             for (var i = 0; i < result.length; i++) {
-                var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
                 $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
             }
 
@@ -149,7 +149,7 @@
                 $("#tablewithtags tbody").empty();
                 result = JSON.parse(data);
                 for (var i = 0; i < result.length; i++) {
-                    var trbody = '<td>' + result[i].HashTag + '</td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
                     $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
                 }
                 $("#successaddtag").removeClass("hide");
