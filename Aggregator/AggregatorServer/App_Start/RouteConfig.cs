@@ -11,8 +11,8 @@ namespace AggregatorServer
 
             routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{query}",
-                defaults: new { controller = "Home", action = "Index", query = UrlParameter.Optional }
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

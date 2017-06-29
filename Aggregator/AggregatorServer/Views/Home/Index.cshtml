@@ -3,31 +3,33 @@
 }
 <div class="container">
     <div class="row" id="search_panel">
-        <div class="input-field col s8 m6 offset-s2 offset-m3">
-            <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
-            <label class="active" for="search_input">Введите тег</label>
-            <div class="progress">
-                <div id="progress_bar"></div>
-            </div>
-
+        <div class="col s10 m8 l6 offset-s1 offset-m2 offset-l3">
             @if (Request.IsAuthenticated)
             {
+                <p class="green-text">Здравствуйте, @User.Identity.Name</p>
+                if (User.IsInRole("admin"))
+                {
+                    <a class="waves-effect waves-light btn col s12" href="/Account/Users">Пользователи</a>
+                }
+                <a class="waves-effect waves-light btn col s12" href="/Account/Tags">Теги</a>
                 using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                 {
                     @Html.AntiForgeryToken()
-                    <a class="waves-effect waves-light btn left" id="search_button" style="display:inline-block;margin-right:2%;margin-top:2%;">Поиск</a>
-                    <a href="/Account/AddHashTag" class="waves-effect waves-light btn left" style="display:inline-block;margin-right:2%;margin-top:2%;">Регистрация тега</a>
-                    <a class="waves-effect waves-light btn left" style="display:inline-block;margin-right:2%;margin-top:2%;" href="javascript:document.getElementById('logoutForm').submit()">Выйти</a>
+                    <a class="waves-effect waves-light btn col s12" href="javascript:document.getElementById('logoutForm').submit()">Выход</a>
                 }
-
             }
             else
             {
-                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" id="search_button">Поиск</a>
-                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="http://localhost:49770/Account/Login">Войти</a>
-                <a class="waves-effect waves-light btn left" style="margin-right:2%;margin-top:2%;" href="http://localhost:49770/Account/Register">Регистрация</a>
+                <a class="waves-effect waves-light btn col s12" href="/Account/Login">Вход</a>
             }
-
+            <div class="input-field col s12">
+                <input id="search_input" type="text" class="validate" value="@ViewBag.Query">
+                <label class="active" for="search_input">Введите тег</label>
+                <div class="progress">
+                    <div id="progress_bar"></div>
+                </div>
+                <a class="waves-effect waves-light btn col s12" id="search_button">Поиск</a>
+            </div>
         </div>
     </div>
 </div>
@@ -112,10 +114,10 @@
 
 @section scripts{
     <script type="text/javascript">
-        var block = false;
-        var result;
-        var listresult = [];
         $(function () {
+            var block = false;
+            var result;
+            var listresult = [];
 
             function fill(list, len) {
                 var cols = [$("#col1")];
@@ -196,19 +198,21 @@
 
             function search() {
 
-                blck = false;
+                var query = $("#search_input").val().toString();
+                $("#search_button").addClass("disabled");
+
+                $("#progress_bar").addClass("indeterminate");
+
                 $("#search_panel").animate({
-                    "margin-top": 0
+                    "margin-top": "5px"
                 }, 500, function () {
 
                 });
 
-                $("#progress_bar").addClass("indeterminate");
-
                 $.ajax({
                     type: "POST",
                     url: '/Home/Search',
-                    data: { query: $("#search_input").val().toString() },
+                    data: { query: query },
                 }).done(function (data) {
 
                     $("#col1").empty();
@@ -232,6 +236,8 @@
                     }
 
                 }).always(function () {
+
+                    $("#search_button").removeClass("disabled");
                     $("#progress_bar").removeClass();
                 });
             }
@@ -241,12 +247,16 @@
 
             $('#search_input').keyup(function (e) {
                 if (e.keyCode == 13) {
-                    search();
+                    if (!$("#search_button").hasClass("disabled")) {
+                        search();
+                    }
                 }
             });
 
             $("#search_button").click(function () {
-                search();
+                if (!$("#search_button").hasClass("disabled")) {
+                    search();
+                }
             });
 
             $("login").click(function () {
@@ -272,7 +282,7 @@
                                     twPage: result.TwitterPagination
                                 },
                             }).done(function (data) {
-                                result = JSON.parse(data);;
+                                result = JSON.parse(data);
                                 if (result.Posts.length > 0)
                                     copylists(result.Posts);
                                 else block = true;

@@ -9,9 +9,9 @@ namespace AggregatorServer.Controllers
     public class HomeController : Controller
     {
         [HttpGet]
-        public ActionResult Index(string query)
+        public ActionResult Index(string id)
         {
-            ViewBag.Query = query;
+            ViewBag.Query = id;
             return View();
         }
 
@@ -34,13 +34,6 @@ namespace AggregatorServer.Controllers
             }
 
             AggregatorModel aggregator = new AggregatorModel();
-           /* SearchResult y=aggregator.Search(query);
-            Session["list"] = new List<GeneralPost>(y.Posts);
-            y.Posts.Clear();
-            GeneralPost[] temp = new GeneralPost[20];
-            List<GeneralPost> y2 = Session["list"] as List<GeneralPost>;
-            y2.CopyTo(0, temp, 0, 20);
-            y.Posts = new List<GeneralPost>(temp);*/
             return JsonConvert.SerializeObject(aggregator.Search(query));
         }
 

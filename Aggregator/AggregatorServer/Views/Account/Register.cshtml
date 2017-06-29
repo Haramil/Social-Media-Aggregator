@@ -1,13 +1,11 @@
 ﻿@model AggregatorServer.Models.RegisterModel
 @{
-    ViewBag.Title = "Регистрация";
+    ViewBag.Title = "Пользователи";
 }
 <div class="container">
     <div class="row">
-        <h4 class="col s12">Регистрация</h4>
-    </div>
-    <div class="row">
         <div class="col s12">
+            <h5>Добавить пользователя</h5>        
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
@@ -30,8 +28,8 @@
                     <div class="col s12">
                         <div class="materialize-red-text">@Html.ValidationSummary(true)</div>
                     </div>
-                    <button type="submit" class="waves-effect waves-light btn col s12">Зарегистрироваться</button>
-                    <a href="/Home/Index" class="waves-effect waves-light btn col s12">На главную</a>
+                    <button type="submit" class="waves-effect waves-light btn col s12">Добавить</button>
+                    <a href="/Account/Users" class="waves-effect waves-light btn col s12">Вернуться</a>
                 </div>
             }
         </div>

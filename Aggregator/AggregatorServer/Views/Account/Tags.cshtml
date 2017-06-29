@@ -1,0 +1,211 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Теги";
+}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h5>Добавление тега</h5>
+            <div class="input-field">
+                <input id="search_input" type="text" class="validate">
+                <label class="active" for="search_input">Введите тег</label>
+                <div class="progress">
+                    <div id="progress_bar"></div>
+                </div>
+                <p class="materialize-red-text center-align hide" id="errorqueryempty">Введите тег</p>
+                <p class="green-text center-align hide" id="successaddtag">Тег успешно зарегистрирован</p>
+                <p class="green-text center-align hide" id="successdeletetag">Тег успешно удалён</p>
+                <p class="materialize-red-text center-align hide" id="errorwithbd">Ошибка, что-то не так на сервере</p>
+                <p class="materialize-red-text center-align hide" id="errortagexists">Ошибка, этот тег уже есть в базе данных</p>
+                <br />
+                <div class="input-field">
+                    <select id="countofpages">
+                        <option value="1" disabled selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                    <label>Число страниц</label>
+                </div>
+                <a class="waves-effect waves-light btn col s12" id="registertagbutton">Зарегистрировать тег</a>
+                <a class="waves-effect waves-light btn col s12" href="/Home/Index">На главную</a>
+            </div>
+        </div>
+        <div class="col s12">
+            <h5>Зарегистрированные теги</h5>
+            <table id="tablewithtags" class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Тег</th>
+                        <th>Число страниц</th>
+                        <th>Дата добавления</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h5>Удаление тега</h5>
+        <p>Вы уверены, что хотите удалить этот тег из базы данных?</p>
+        <input type="text" class="hide" id="hashfordelete" />
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" id="okdelete">Ок</a>
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Отмена</a>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var probels = true;
+
+        $("#registertagbutton").addClass("disabled");
+
+        $('select').material_select();
+        $.ajax({
+            type: "POST",
+            url: '/Account/GetAllTags',
+            data: {},
+        }).done(function (data) {
+            $("#tablewithtags tbody").empty();
+            result = JSON.parse(data);
+            for (var i = 0; i < result.length; i++) {
+                var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+            }
+
+        }).always(function () {
+            $(".modal-trigger").leanModal();
+
+            $("#registertagbutton").removeClass("disabled");
+        });
+
+        $('#search_input').keyup(function (e) {
+            if (e.keyCode == 13) {
+                if (!$("#registertagbutton").hasClass("disabled")) {
+                    regtag();
+                }
+            }
+        });
+
+        $("#registertagbutton").click(function () {
+            if (!$("#registertagbutton").hasClass("disabled")) {
+                regtag();
+            }
+        });
+
+        var block = false;
+        var result;
+        var listresult = [];
+        $(".modal-trigger").leanModal();
+
+        function regtag() {
+
+            var query = $("#search_input").val().toString();
+            var countofpages = $("#countofpages option:selected").val()
+
+            $("#registertagbutton").addClass("disabled");
+
+            $("#successaddtag").addClass("hide");
+            $("#successdeletetag").addClass("hide");
+            $("#errorwithbd").addClass("hide");
+            $("#errortagexists").addClass("hide");
+            $("#errorqueryempty").addClass("hide");
+            probels = true;
+            onlyprobels($("#search_input").val().toString());
+            if (probels) {
+                $("#errorqueryempty").removeClass("hide");
+
+                $("#registertagbutton").removeClass("disabled");
+                return;
+            }
+
+            $("#progress_bar").addClass("indeterminate");
+            $.ajax({
+                type: "POST",
+                url: '/Account/AddHashTag',
+                data: { query: query, countofpages: countofpages },
+            }).done(function (data) {
+                if (data == "tagexists") {
+                    $("#errortagexists").removeClass("hide");
+                    return;
+                }
+                if (data == "badbd") {
+                    $("#errorwithbd").removeClass("hide");
+                    return;
+                }
+                $("#tablewithtags tbody").empty();
+                result = JSON.parse(data);
+                for (var i = 0; i < result.length; i++) {
+                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1" id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+                }
+                $("#successaddtag").removeClass("hide");
+            }).always(function () {
+                $(".modal-trigger").leanModal();
+                $("#progress_bar").removeClass();
+
+                $("#registertagbutton").removeClass("disabled");
+            });
+
+
+        }
+
+        $("#okdelete").click(function () {
+            deletetag();
+        });
+
+        function deletetag() {
+            $("#successaddtag").addClass("hide");
+            $("#successdeletetag").addClass("hide");
+            $("#errorwithbd").addClass("hide");
+            $("#errortagexists").addClass("hide");
+            $("#errorqueryempty").addClass("hide");
+            $("#progress_bar").addClass("indeterminate");
+            $.ajax({
+                type: "POST",
+                url: '/Account/DeleteHashTag',
+                data: { query: $("#hashfordelete").val() },
+            }).done(function (data) {
+                if (data == "badbd") {
+                    $("#errorwithbd").removeClass("hide");
+                    $(".modal-trigger").leanModal();
+                    $("#progress_bar").removeClass();
+                    return;
+                }
+                $("#tablewithtags tbody").empty();
+                result = JSON.parse(data);
+                for (var i = 0; i < result.length; i++) {
+                    var trbody = '<td><a style="color: #26a69a;" href="/Home/Index/' + result[i].HashTag + '">' + result[i].HashTag + '</a></td><td>' + result[i].CountOfPages + '</td><td>' + new Date(result[i].DateOfAdd).toLocaleDateString() + " " + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[0] + ":" + new Date(result[i].DateOfAdd).toLocaleTimeString().split(':')[1] + '</td><td style="border:none; background:#FFFFFF;"><a class="btn-floating btn-large waves-effect waves-light red modal-trigger" href="#modal1"id="' + result[i].HashTag + '" onClick="sethash(this.id)"><i class="material-icons">delete</i></a></td>';
+                    $("#tablewithtags tbody").append("<tr>" + trbody + "</tr>");
+                }
+                $("#successdeletetag").removeClass("hide");
+
+            }).always(function () {
+                $(".modal-trigger").leanModal();
+                $("#progress_bar").removeClass();
+            });
+        }
+        function sethash(hash) {
+
+            $("#hashfordelete").val(hash);
+        }
+        function onlyprobels(data) {
+            for (var i = 0; i < data.length; i++)
+                if (data[i] != ' ') probels = false;
+        }
+
+    </script>
+}
