@@ -84,7 +84,7 @@
     <script type="text/javascript">
         var probels = true;
         $("#registertagbutton").addClass("disabled");
-        $('#search_input').attr("disabled", "");
+        $('#search_input').attr("readonly", "true");
         $('select').material_select();
         $.ajax({
             type: "POST",
@@ -101,7 +101,7 @@
         }).always(function () {
             $(".modal-trigger").leanModal();
             $("#registertagbutton").removeClass("disabled");
-            $('#search_input').removeAttr("disabled");
+            $('#search_input').removeAttr("readonly");
         });
 
         $('#search_input').keyup(function (e) {
@@ -116,8 +116,11 @@
         $(".modal-trigger").leanModal();
 
         function regtag() {
+            if ($("#registertagbutton").hasClass("disabled"))
+                return;
+
             $("#registertagbutton").addClass("disabled");
-            $('#search_input').attr("disabled", "");
+            $('#search_input').attr("readonly", "true");
             $("#successaddtag").addClass("hide");
             $("#successdeletetag").addClass("hide");
             $("#errorwithbd").addClass("hide");
@@ -127,8 +130,6 @@
             onlyprobels($("#search_input").val().toString());
             if (probels) {
                 $("#errorqueryempty").removeClass("hide");
-                $("#registertagbutton").removeClass("disabled");
-                $('#search_input').removeAttr("disabled");
                 return;
             }
 
@@ -140,18 +141,10 @@
             }).done(function (data) {
                 if (data == "tagexists") {
                     $("#errortagexists").removeClass("hide");
-                    $(".modal-trigger").leanModal();
-                    $("#progress_bar").removeClass();
-                    $("#registertagbutton").removeClass("disabled");
-                    $('#search_input').removeAttr("disabled");
                     return;
                 }
                 if (data == "badbd") {
                     $("#errorwithbd").removeClass("hide");
-                    $(".modal-trigger").leanModal();
-                    $("#progress_bar").removeClass();
-                    $("#registertagbutton").removeClass("disabled");
-                    $('#search_input').removeAttr("disabled");
                     return;
                 }
                 $("#tablewithtags tbody").empty();
@@ -165,7 +158,7 @@
                 $(".modal-trigger").leanModal();
                 $("#progress_bar").removeClass();
                 $("#registertagbutton").removeClass("disabled");
-                $('#search_input').removeAttr("disabled");
+                $('#search_input').removeAttr("readonly");
             });
 
 

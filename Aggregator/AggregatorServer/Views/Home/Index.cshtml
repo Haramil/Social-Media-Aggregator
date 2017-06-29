@@ -195,6 +195,12 @@
 
 
             function search() {
+                if ($("#search_button").hasClass("disabled"))
+                    return;
+
+                $("#search_button").addClass("disabled");
+                $('#search_input').attr("readonly","true");
+                $("#progress_bar").addClass("indeterminate");
 
                 blck = false;
                 $("#search_panel").animate({
@@ -202,8 +208,6 @@
                 }, 500, function () {
 
                 });
-
-                $("#progress_bar").addClass("indeterminate");
 
                 $.ajax({
                     type: "POST",
@@ -232,6 +236,8 @@
                     }
 
                 }).always(function () {
+                    $("#search_button").removeClass("disabled");
+                    $('#search_input').removeAttr("readonly");
                     $("#progress_bar").removeClass();
                 });
             }
