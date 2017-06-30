@@ -22,7 +22,7 @@ namespace AggregatorServer.Models
 
             // создаем пользователей
             var admin = new ApplicationUser { Login = "Admin", UserName = "Admin" };
-            string password = "ad46D_ewr3";
+            string password = "12345678";
             var result = userManager.Create(admin, password);
 
             // если создание пользователя прошло успешно
