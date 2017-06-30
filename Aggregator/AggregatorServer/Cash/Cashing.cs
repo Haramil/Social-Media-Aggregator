@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using AggregatorServer.Models;
-using System.Threading;
-using System.IO;
-using Newtonsoft.Json;
-using System.Web.Hosting;
-using System.Net;
-using System.Drawing;
+﻿using AggregatorServer.Models;
 using SearchLibrary;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Web.Hosting;
 
 namespace AggregatorServer.Cash
 {

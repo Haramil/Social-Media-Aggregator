@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using SearchLibrary;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Web;
 using TwitterSearcher.Classes;
 using TwitterSearcher.Services;
 
@@ -14,13 +12,6 @@ namespace TwitterSearcher
     public class TwitterSearch : ISearcher
     {
         private string searchurl = "https://twitter.com/i/search/timeline%23";
-        private string Query = "q";
-        private string RealTime = "f";
-        private string Src = "src";
-        private string IncludeFeatures = "include_available_features";
-        private string IncludeEntities = "include_entities";
-        private string LastNodeTs = "last_note_ts";
-        private string MaxPosition = "max_position";
         internal HtmlService htmlService { get; set; }
 
         public TwitterSearch()
@@ -30,40 +21,28 @@ namespace TwitterSearcher
 
         public string Search(string query, List<GeneralPost> posts, string info, List<string> dict)
         {
-
-            var url = "https://twitter.com/i/search/timeline?f=realtime&q=%23"+query+"&src=typd&max_position="+info;
-            var twitterresponse = GetTwitterResponse(url);
-
-            if (twitterresponse == null) return "";
-
-            lock (posts)
+            try
             {
-                posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html, dict));
+                var url = "https://twitter.com/i/search/timeline?f=realtime&q=%23" + query + "&src=typd&max_position=" + info;
+                var twitterresponse = GetTwitterResponse(url);
+
+                if (twitterresponse == null) return "";
+
+                lock (posts)
+                {
+                    posts.AddRange(htmlService.GetTweets(twitterresponse.Items_html, dict));
+                }
+                if (twitterresponse.MinPosition != "" && twitterresponse.MinPosition != info)
+                    return twitterresponse.MinPosition;
+                else return "";
             }
-            if (twitterresponse.MinPosition!="" && twitterresponse.MinPosition!=info)
-                return twitterresponse.MinPosition;
-            else return "";
+            catch
+            {
+                return "";
+            }
         }
 
         #region privatesection
-        private string GetUrl(string query, string info)
-        {
-
-            var uriBuilder = new UriBuilder(searchurl);
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters[RealTime] = "realtime";
-            parameters[Query] = query;
-            parameters[Src] = "typd";
-           /* parameters[IncludeFeatures] = "1";
-            parameters[IncludeEntities] = "1";
-            parameters[LastNodeTs] = "85";*/
-            parameters[MaxPosition] = info;
-            uriBuilder.Query = parameters.ToString();
-            Uri finalUrl = uriBuilder.Uri;
-            return finalUrl.AbsoluteUri;
-
-        }
-
         private TweetResponse GetTwitterResponse(string path)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);

@@ -1,8 +1,8 @@
-﻿using Microsoft.Owin;
-using Owin;
-using AggregatorServer.Models;
-using Microsoft.Owin.Security.Cookies;
+﻿using AggregatorServer.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin;
+using Microsoft.Owin.Security.Cookies;
+using Owin;
 
 [assembly: OwinStartup(typeof(AggregatorServer.Startup))]
 namespace AggregatorServer
@@ -13,7 +13,7 @@ namespace AggregatorServer
         {
             // настраиваем контекст и менеджер
 
-            app.CreatePerOwinContext<ApplicationContext>(ApplicationContext.Create);
+            app.CreatePerOwinContext(ApplicationContext.Create);
 
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
