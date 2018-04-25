@@ -15,15 +15,17 @@ namespace InstagramSearcher
         {
             GeneralPost newPost = new GeneralPost();
 
-            newPost.Text = instagramPost.caption;
+            var caption = instagramPost.edge_media_to_caption.edges;
+
+            newPost.Text = caption[0].node.text;
 
             Cenzor cenzor = new Cenzor();
             newPost.Text = cenzor.Cenz(newPost.Text, dict);
 
-            newPost.Image = instagramPost.display_src;
-            double sec = instagramPost.date;
+            newPost.Image = instagramPost.display_url;
+            double sec = instagramPost.taken_at_timestamp;
             newPost.Date = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(sec).ToLocalTime();
-            newPost.PostLink = "https://www.instagram.com/p/" + instagramPost.code;
+            newPost.PostLink = "https://www.instagram.com/p/" + instagramPost.shortcode;
             newPost.Social = SocialMedia.Instagram;
 
             try
@@ -62,13 +64,13 @@ namespace InstagramSearcher
             catch { return pageInfo; }
 
             dynamic instData = JsonConvert.DeserializeObject(responseString);
-            var inst = instData.tag.media;
+            var inst = instData.graphql.hashtag.edge_hashtag_to_media;
             try
             {
                 List<Thread> postThreads = new List<Thread>();
-                foreach (var instElem in inst.nodes)
+                foreach (var instElem in inst.edges)
                 {
-                    Thread postThread = new Thread(() => PostSearch(instElem, searchResult, dict));
+                    Thread postThread = new Thread(() => PostSearch(instElem.node, searchResult, dict));
                     postThreads.Add(postThread);
                     postThread.Start();
                 }
